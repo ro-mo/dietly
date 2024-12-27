@@ -1,0 +1,29 @@
+<% if notice.present? %>
+  <div
+    data-controller="element-removal"
+    data-action="animationend->element-removal#remove"
+    class="fixed right-8 bottom-8 z-50"
+  >
+    <div class="animate-appear-then-fade flex items-center gap-3 rounded-lg bg-stone-50 px-3 py-2 shadow-lg ring-1 ring-stone-950/10 dark:bg-stone-800 dark:ring-white/10">
+      <p class="text-sm font-medium text-stone-900 dark:text-stone-100"><%= notice %></p>
+      <button class="rounded-md p-1 text-stone-500 hover:bg-stone-100 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-200" data-action="element-removal#remove">
+        x
+      </button>
+    </div>
+  </div>
+<% end %>
+<% if alert.present? %>
+  <div
+    data-controller="element-removal"
+    data-action="animationend->element-removal#remove"
+    class="fixed right-8 bottom-8 z-50"
+  >
+    <div class="animate-appear-then-fade flex items-center gap-3 rounded-lg bg-stone-50 px-3 py-2 shadow-lg ring-1 ring-stone-950/10 dark:bg-stone-800 dark:ring-white/10">
+      <%= icon "exclamation-triangle", class: "bg-red-500" %>
+      <p class="text-sm font-medium text-stone-900 dark:text-stone-100"><%= alert %></p>
+      <button class="rounded-md p-1 text-stone-500 hover:bg-stone-100 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-200" data-action="element-removal#remove">
+        x
+      </button>
+    </div>
+  </div>
+<% end %>

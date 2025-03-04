@@ -1,27 +1,11 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center p-6">
-  <div class="bg-white shadow-2xl rounded-xl p-8 w-full max-w-md text-center">
-    <div class="mb-6">
-      <% if authenticated? %>
-        <h1 class="font-bold text-4xl text-blue-800 mb-4">
-          Welcome, <%= Current.user.first_name %>!
-        </h1>
-        <%= button_to "Log out", session_path, method: :delete, 
-          class: "w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out" %>
-      <% else %>
-        <h1 class="font-bold text-4xl text-blue-800 mb-4">
-          Welcome to Dietly
-        </h1>
-        <%= link_to "Login", new_session_path, 
-          class: "w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg inline-block transition duration-300 ease-in-out" %>
-      <% end %>
-    </div>
+<div>
+  <%= button_to "Log out", session_path, method: :delete if authenticated? %>
+  <%= link_to "Login", new_session_path unless authenticated? %>
+  <% if authenticated? %>
+    <h1 class="font-bold text-4xl">Welcome to Dietly, <%= Current.user.first_name %>!</h1>
+  <% else %>
+    <h1 class="font-bold text-4xl">Welcome to Dietly!</h1>
+  <% end %>
+  <p>Find me in app/views/home/show.html.erb</p>
 
-    <p class="text-gray-500 italic">
-      sei pronto a dimagrire obeso di merda?
-    </p>
-  </div>
-
-  <div class="mt-4 text-xs text-gray-400 opacity-50">
-    View location: app/views/home/show.html.erb
-  </div>
 </div>

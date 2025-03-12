@@ -7,11 +7,11 @@ class DailyMenu < ApplicationRecord
   validates :day_of_week, presence: true, inclusion: { in: 1..7 }
 
   
-    def total_calories
-      meals.sum do |meal|
-        meal.calories.to_f
-      end
+  def total_calories
+    meals.sum do |meal|
+      meal.calories.to_f
     end
+  end
 
   
 

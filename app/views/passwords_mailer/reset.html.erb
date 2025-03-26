@@ -1,4 +1,12 @@
+<p>Ciao <%= @user.name %>,</p>
+
+<p>Abbiamo ricevuto una richiesta di reimpostazione della tua password.</p>
+
 <p>
-  You can reset your password within the next 15 minutes on
-  <%= link_to "this password reset page", edit_password_url(@user.password_reset_token) %>.
+  <a href="<%= edit_password_url(@user, token: @token) %>">
+    Clicca qui per reimpostare la tua password
+  </a>
 </p>
+
+<p>Se non hai richiesto questa operazione, ignora questa email.</p>
+

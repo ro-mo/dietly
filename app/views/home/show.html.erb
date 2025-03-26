@@ -37,20 +37,37 @@
               Il tuo percorso verso il benessere è la nostra priorità. Monitora la tua alimentazione, consulta il tuo medico e raggiungi i tuoi obiettivi con Dietly.
             </p>
             
-            <div class="mt-8 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-              <a href="#" class="flex items-center justify-center text-white bg-marmorean-500 hover:bg-marmorean-600 focus:ring-4 focus:ring-marmorean-300 font-medium rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300 ease-in-out shadow-md dark:bg-marmorean-600 dark:hover:bg-marmorean-700 dark:focus:ring-marmorean-800">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                Il mio diario alimentare
-              </a>
-              <a href="#" class="flex items-center justify-center text-marmorean-600 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-marmorean-100 font-medium rounded-lg text-sm px-5 py-3 text-center border border-marmorean-200 transition-colors duration-300 ease-in-out shadow-md dark:text-marmorean-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:focus:ring-marmorean-800">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Prenota appuntamento
-              </a>
-            </div>
+            <% if Current.user.is_a?(Patient) %>
+              <div class="mt-8 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <a href="#" class="flex items-center justify-center text-marmorean-600 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-marmorean-100 font-medium rounded-lg text-sm px-5 py-3 text-center border border-marmorean-200 transition-colors duration-300 ease-in-out shadow-md dark:text-marmorean-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:focus:ring-marmorean-800">
+                  <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Il mio diario alimentare
+                </a>
+                <a href="#" class="flex items-center justify-center text-marmorean-600 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-marmorean-100 font-medium rounded-lg text-sm px-5 py-3 text-center border border-marmorean-200 transition-colors duration-300 ease-in-out shadow-md dark:text-marmorean-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:focus:ring-marmorean-800">
+                  <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Prenota appuntamento
+                </a>
+              </div>
+            <% elsif Current.user.is_a?(Doctor) %>
+              <div class="mt-8 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <a href="#" class="flex items-center justify-center text-marmorean-600 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-marmorean-100 font-medium rounded-lg text-sm px-5 py-3 text-center border border-marmorean-200 transition-colors duration-300 ease-in-out shadow-md dark:text-marmorean-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:focus:ring-marmorean-800">
+                  <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Gestione pazienti
+                </a>
+                <a href="#" class="flex items-center justify-center text-marmorean-600 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-marmorean-100 font-medium rounded-lg text-sm px-5 py-3 text-center border border-marmorean-200 transition-colors duration-300 ease-in-out shadow-md dark:text-marmorean-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700 dark:focus:ring-marmorean-800">
+                  <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Gestione diete
+                </a>
+              </div>
+            <% end %>
           <% else %>
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white relative z-10">
               Una nuova esperienza <span class="text-marmorean-500 dark:text-marmorean-400">nutrizionale</span>

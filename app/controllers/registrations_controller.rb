@@ -4,7 +4,7 @@ class RegistrationsController < ApplicationController
 
   private
     def user_params
-      params.require(resource_name).permit(:first_name, :last_name, :email_address, :phone, :password, :password_confirmation, :albo_id)
+      params.require(resource_name).permit(:first_name, :last_name, :email_address, :phone, :password, :password_confirmation)
     end
 
     def resource_name

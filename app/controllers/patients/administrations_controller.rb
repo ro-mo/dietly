@@ -1,13 +1,22 @@
 class Patients::AdministrationsController < ApplicationController
-  before_action :authenticate!
   before_action :ensure_patient
 
   def diet_routine
-    @current_diet = Current.user.diet_plans.active.first
+    begin
+      @current_diet = Current.user.diet_plan.active.first
+      unless @current_diet
+        redirect_to root_path, alert: "Non hai ancora un piano dietetico attivo. Contatta il tuo dottore per ricevere un piano personalizzato."
+      end
+    rescue ActiveRecord::StatementInvalid
+      redirect_to root_path, alert: "Il sistema non è ancora configurato per gestire i piani dietetici. Contatta il tuo dottore per ricevere un piano personalizzato."
+    end
   end
 
   def doctor_appointments
     @doctor = Current.user.doctor
+    unless @doctor
+      redirect_to root_path, alert: "Non hai un dottore assegnato."
+    end
   end
 
   private

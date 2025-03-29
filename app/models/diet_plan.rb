@@ -1,9 +1,11 @@
 class DietPlan < ApplicationRecord
-  belongs_to :patients, :doctor
+  belongs_to :patient
+  belongs_to :doctor
   has_many :daily_menus, dependent: :destroy
   has_many :meals, through: :daily_menus
 
   validates :patient_id, presence: true
+  validates :doctor_id, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :active, inclusion: { in: [ true, false ] }

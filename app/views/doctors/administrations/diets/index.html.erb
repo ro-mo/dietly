@@ -1,0 +1,56 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Diete</h1>
+    <%= link_to "Crea Nuova Dieta", "#", class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Paziente</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Inizio</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Fine</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stato</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Azioni</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <% @diet_plan.each do |diet| %>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900 dark:text-white">
+                <%= diet.patient_name %> <%= diet.patient_surname %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                <%= diet.start_date.strftime("%d/%m/%Y") %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                <%= diet.end_date.strftime("%d/%m/%Y") %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <% if diet.active? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                  Attiva
+                </span>
+              <% else %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                  Completata
+                </span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <%= link_to "Visualizza", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300 mr-3" %>
+              <%= link_to "Modifica", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div> 

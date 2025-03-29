@@ -7,8 +7,10 @@ Rails.application.routes.draw do
     post "signup", to: "registrations#create"
 
     # Route per i medici
-    get "patients_management", to: "administrations#patients_management"
-    get "diets_management", to: "administrations#diets_management"
+    namespace :administrations do
+      get "patients_management", to: "patients#index"
+      get "diets_management", to: "diets#index"
+    end
   end
 
   namespace :patients do

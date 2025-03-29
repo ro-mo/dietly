@@ -11,7 +11,7 @@ class PasswordsController < ApplicationController
       PasswordsMailer.reset(user).deliver_later
     end
 
-    redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)."
+    redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
   end
 
   def edit
@@ -20,9 +20,9 @@ class PasswordsController < ApplicationController
   def update
     if @user.update(password_params)
       @user.update(password_reset_token: nil, password_reset_sent_at: nil) # Invalida il token
-      redirect_to new_session_path, notice: "Password has been reset."
+      redirect_to new_session_path, notice: "La password è stata resettata."
     else
-      redirect_to edit_password_path(params[:token]), alert: "Passwords did not match."
+      redirect_to edit_password_path(params[:token]), alert: "Le password non corrispondono."
     end
   end
 
@@ -32,7 +32,7 @@ class PasswordsController < ApplicationController
     @user = User.find_by(password_reset_token: params[:token])
 
     if @user.nil? || @user.password_reset_sent_at < 2.hours.ago
-      redirect_to new_password_path, alert: "Password reset link is invalid or has expired."
+      redirect_to new_password_path, alert: "Link per il reset della password non valido o scaduto."
     end
   end
 

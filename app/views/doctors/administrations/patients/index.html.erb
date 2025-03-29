@@ -1,7 +1,6 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Pazienti</h1>
-    <%= link_to "Aggiungi Paziente", "#", class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
@@ -39,8 +38,10 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <%= link_to "Visualizza", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300 mr-3" %>
-              <%= link_to "Modifica", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300" %>
+              <div class="flex space-x-2">
+                <%= link_to "Modifica paziente", "#", class: "px-3 py-1 bg-marmorean-600 text-gray-700 rounded-md hover:bg-marmorean-700 transition-colors duration-200 text-sm" %>
+                <%= link_to "Modifica dieta", doctors_administrations_diets_management_path, class: "px-3 py-1 bg-marmorean-600 text-gray-700 rounded-md hover:bg-marmorean-700 transition-colors duration-200 text-sm" %>
+              </div>
             </td>
           </tr>
         <% end %>

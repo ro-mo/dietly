@@ -1,7 +1,10 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Diete</h1>
-    <%= link_to "Crea Nuova Dieta", doctors_administrations_diets_diet_creation_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+    <div class="flex space-x-4">
+      <%= link_to "Torna alla lista", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
+      <%= link_to "Crea Nuova Dieta", doctors_administrations_diets_diet_creation_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+    </div>
   </div>
 
   <% if @diet_plan.present? %>

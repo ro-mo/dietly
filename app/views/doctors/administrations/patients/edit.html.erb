@@ -1,0 +1,55 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modifica Dati Paziente</h1>
+    <%= link_to "Torna alla lista", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <% if @patient.errors.any? %>
+      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
+        <h2 class="text-red-700 text-sm font-medium dark:text-red-300">
+          <%= pluralize(@patient.errors.count, "errore") %> impedisce il salvataggio:
+        </h2>
+        <ul class="mt-2 list-disc list-inside text-sm text-red-600 dark:text-red-300">
+          <% @patient.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with(model: [:doctors, :administrations, @patient], class: "space-y-6") do |f| %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= f.label :first_name, "Nome", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.text_field :first_name, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-marmorean-500 focus:border-marmorean-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= f.label :last_name, "Cognome", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.text_field :last_name, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-marmorean-500 focus:border-marmorean-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= f.label :email_address, "Email", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.email_field :email_address, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-marmorean-500 focus:border-marmorean-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= f.label :phone, "Telefono", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.telephone_field :phone, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-marmorean-500 focus:border-marmorean-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= f.label :fiscal_code, "Codice Fiscale", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.text_field :fiscal_code, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-marmorean-500 focus:border-marmorean-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4 mt-8">
+        <%= link_to "Annulla", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
+        <%= f.submit "Salva Modifiche", class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+      </div>
+    <% end %>
+  </div>
+</div>

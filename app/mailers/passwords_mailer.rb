@@ -4,9 +4,18 @@ class PasswordsMailer < ApplicationMailer
     @token = params[:token]
 
     # Usa il metodo 'mail' per inviare l'email
-    mail(
-      to: @user.email_address,
-      subject: "Reset della tua password"
-    )
+    if Rails.env.development?
+      mail(
+        to: @user.email_address,
+        subject: "Reset della tua password"
+      ).deliver_now
+    else
+      mail(
+        to: @user.email_address,
+        subject: "Reset della tua password"
+      ).deliver_later
+    end
   end
+
+  default from: "noreply@dietly.com"
 end

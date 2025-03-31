@@ -29,7 +29,12 @@ class PasswordsController < ApplicationController
         password_reset_attempts: user.password_reset_attempts.to_i + 1
       )
 
-      PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_later
+      # In development, use deliver_now to see the email immediately
+      if Rails.env.development?
+        PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_now
+      else
+        PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_later
+      end
     end
 
     redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."

@@ -67,3 +67,8 @@ group :test do
 end
 
 gem "letter_opener_web", "~> 3.0", :group => :development
+
+gem "dotenv-rails", "~> 3.1", :group => :development
+gem "test", "~> 1.0", :group => :development
+
+gem "sendgrid-ruby", "~> 6.7"

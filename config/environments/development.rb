@@ -31,18 +31,12 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :sendgrid
   config.action_mailer.perform_deliveries = true
   
-  # Configurazione SMTP
-  config.action_mailer.smtp_settings = {
-    address: 'smtp.gmail.com',
-    port: 587,
-    domain: 'gmail.com',
-    user_name: ENV['GMAIL_USERNAME'],
-    password: ENV['GMAIL_APP_PASSWORD'],
-    authentication: 'plain',
-    enable_starttls_auto: true
+  # Configurazione SendGrid
+  config.action_mailer.sendgrid_settings = {
+    api_key: ENV['SENDGRID_API_KEY']
   }
 
   # Log delle deprecazioni

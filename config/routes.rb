@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     namespace :administrations do
       get "patients_management", to: "patients#index"
       get "diets_management", to: "diets#index"
+      resources :patients, only: [:edit, :update]
 
       namespace :diets do
         get "diet_creation", to: "diet_creation"
@@ -20,8 +21,6 @@ Rails.application.routes.draw do
   namespace :patients do
     get "signup", to: "registrations#new"
     post "signup", to: "registrations#create"
-
-    # Route per i pazienti
     get "diet_routine", to: "administrations#diet_routine"
     get "doctor_appointments", to: "administrations#doctor_appointments"
   end

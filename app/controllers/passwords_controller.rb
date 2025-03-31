@@ -29,7 +29,7 @@ class PasswordsController < ApplicationController
         password_reset_attempts: user.password_reset_attempts.to_i + 1
       )
 
-      PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver
+      PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_now
     end
 
     redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."

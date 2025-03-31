@@ -10,6 +10,10 @@ Rails.application.routes.draw do
     namespace :administrations do
       get "patients_management", to: "patients#index"
       get "diets_management", to: "diets#index"
+
+      namespace :diets do
+        get "diet_creation", to: "diet_creation"
+      end
     end
   end
 

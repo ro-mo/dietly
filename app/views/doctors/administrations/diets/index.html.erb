@@ -1,10 +1,10 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Diete</h1>
-    <%= link_to "Crea Nuova Dieta", "#", class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+    <%= link_to "Crea Nuova Dieta", doctors_administrations_diets_diet_creation_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
   </div>
 
-  <% if @diet_plan.any? %>
+  <% if @diet_plan.present? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead class="bg-gray-50 dark:bg-gray-700">

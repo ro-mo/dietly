@@ -139,6 +139,8 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.9.1)
+    jwt (2.10.1)
+      base64
     kamal (2.4.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -380,6 +382,7 @@ DEPENDENCIES
   hotwire-spark
   importmap-rails
   jbuilder
+  jwt
   kamal
   letter_opener
   letter_opener_web (~> 3.0)

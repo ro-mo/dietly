@@ -8,6 +8,4 @@ class PasswordsMailer < ApplicationMailer
       subject: "Reset della tua password"
     )
   end
-
-  default from: "noreply@dietly.com"
 end

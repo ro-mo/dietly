@@ -36,11 +36,11 @@ Rails.application.configure do
   
   # Configurazione SMTP per SendGrid
   config.action_mailer.smtp_settings = {
-    address: 'smtp.sendgrid.net',
+    address: "smtp.sendgrid.net",
     port: 587,
-    domain: 'dietly.com',
-    user_name: 'apikey',
-    password: ENV['SENDGRID_API_KEY'],
+    domain: "dietly.com",
+    user_name: "apikey",
+    password: ENV["SENDGRID_API_KEY"],
     authentication: :plain,
     enable_starttls_auto: true
   }

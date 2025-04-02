@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     namespace :administrations do
       get "patients_management", to: "patients#index"
       get "diets_management", to: "diets#index"
-      get "appointment_management" , to: "appointment#index"
       resources :patients, only: [:edit, :update]
 
       namespace :diets do

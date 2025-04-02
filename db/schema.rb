@@ -22,7 +22,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_000000) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email_address", default: "", null: false
+    t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_000000) do
     t.string "first_name"
     t.string "last_name"
     t.string "phone"
-    t.index ["email_address"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

@@ -1,0 +1,103 @@
+<!-- app/views/doctors/administrations/appointment/index.html.erb -->
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Gestione Appuntamenti</h1>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Appuntamenti Futuri</h2>
+    
+    <% if @upcoming_appointments.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white dark:bg-gray-800">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Paziente</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ora</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stato</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Azioni</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% @upcoming_appointments.each do |appointment| %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  <%= appointment.patient.full_name %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <%= appointment.scheduled_at.strftime("%d/%m/%Y") %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <%= appointment.scheduled_at.strftime("%H:%M") %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <%= appointment.status == 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : '' %>
+                    <%= appointment.status == 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : '' %>
+                    <%= appointment.status == 'completed' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' : '' %>
+                    <%= appointment.status == 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' : '' %>">
+                    <%= appointment.status.humanize %>
+                  </span>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
+                  <div class="flex space-x-2">
+                    <% if appointment.status == 'pending' || appointment.status == 'confirmed' %>
+                      <%= button_to "Completa", "#", method: :patch, class: "text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+                      <%= button_to "Cancella", "#", method: :patch, class: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-gray-500 dark:text-gray-400">Non ci sono appuntamenti futuri.</p>
+    <% end %>
+  </div>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Appuntamenti Passati</h2>
+    
+    <% if @past_appointments.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white dark:bg-gray-800">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Paziente</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ora</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stato</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% @past_appointments.each do |appointment| %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  <%= appointment.patient.full_name %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <%= appointment.scheduled_at.strftime("%d/%m/%Y") %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <%= appointment.scheduled_at.strftime("%H:%M") %>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-sm">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <%= appointment.status == 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : '' %>
+                    <%= appointment.status == 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : '' %>
+                    <%= appointment.status == 'completed' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' : '' %>
+                    <%= appointment.status == 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' : '' %>">
+                    <%= appointment.status.humanize %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-gray-500 dark:text-gray-400">Non ci sono appuntamenti passati.</p>
+    <% end %>
+  </div>
+</div>

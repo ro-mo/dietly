@@ -1,6 +1,5 @@
 class Doctor < User
   has_many :patients, dependent: :nullify
-  has_many :appointments, dependent: :destroy
   validates :verification_status, inclusion: { in: %w[pending verified failed], allow_nil: true }
 
   # La validazione dell'albo_id viene eseguita in background dopo la registrazione

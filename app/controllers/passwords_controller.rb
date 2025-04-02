@@ -6,7 +6,7 @@ class PasswordsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email_address: params[:email_address])
+    user = User.find_by(email: params[:email])
     
     if user
       # Genera un nuovo token di reset nel formato corretto

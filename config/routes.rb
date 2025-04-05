@@ -10,23 +10,23 @@ Rails.application.routes.draw do
     namespace :administrations do
       get "patients_management", to: "patients#index"
       get "diets_management", to: "diets#index"
-      get "appointment_management" , to: "appointment#index"
       resources :patients, only: [:edit, :update]
 
       namespace :diets do
         get "diet_creation", to: "diet_creation"
       end
     end
+    resources :appointments, only: [:index, :new, :create, :edit, :update, :destroy, :show]
   end
 
   namespace :patients do
     get "signup", to: "registrations#new"
     post "signup", to: "registrations#create"
-    get "diet_routine", to: "administrations#diet_routine"
-    get "doctor_appointments", to: "administrations#doctor_appointments"
-  end
 
-  resources :appointments
+    # Definiamo le rotte direttamente puntando al controller corretto e mantenendo gli helper
+    get "administrations/diet_routine", to: "administrations#diet_routine", as: :administrations_diet_routine
+    get "administrations/my_appointments", to: "administrations#my_appointments", as: :administrations_my_appointments
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -5,22 +5,77 @@ it:
       short: "%H:%M"
       long: "%H:%M:%S"
       time: "%H:%M"
+    am: "am"
+    pm: "pm"
   date:
     formats:
       default: "%d/%m/%Y"
       short: "%d %b"
       long: "%d %B %Y"
       long_with_time: "%d %B %Y %H:%M"
+    day_names: [Domenica, Lunedì, Martedì, Mercoledì, Giovedì, Venerdì, Sabato]
+    abbr_day_names: [Dom, Lun, Mar, Mer, Gio, Ven, Sab]
+    month_names: [~, Gennaio, Febbraio, Marzo, Aprile, Maggio, Giugno, Luglio, Agosto, Settembre, Ottobre, Novembre, Dicembre]
+    abbr_month_names: [~, Gen, Feb, Mar, Apr, Mag, Giu, Lug, Ago, Set, Ott, Nov, Dic]
+    order: [day, month, year]
   datetime:
     formats:
       default: "%d/%m/%Y %H:%M"
       short: "%d %b %H:%M"
       long: "%d %B %Y %H:%M"
       long_with_time: "%d %B %Y %H:%M"
+    distance_in_words:
+      half_a_minute: 'mezzo minuto'
+      less_than_x_seconds:
+        one: 'meno di un secondo'
+        other: 'meno di {{count}} secondi'
+      x_seconds:
+        one: '1 secondo'
+        other: '{{count}} secondi'
+      less_than_x_minutes:
+        one: 'meno di un minuto'
+        other: 'meno di {{count}} minuti'
+      x_minutes:
+        one: '1 minuto'
+        other: '{{count}} minuti'
+      about_x_hours:
+        one: "circa un'ora"
+        other: 'circa {{count}} ore'
+      x_days:
+        one: '1 giorno'
+        other: '{{count}} giorni'
+      about_x_months:
+        one: 'circa 1 mese'
+        other: 'circa {{count}} mesi'
+      x_months:
+        one: '1 mese'
+        other: '{{count}} mesi'
+      about_x_years:
+        one: 'circa 1 anno'
+        other: 'circa {{count}} anni'
+      over_x_years:
+        one: 'oltre 1 anno'
+        other: 'oltre {{count}} anni'
+      almost_x_years:
+        one: 'quasi 1 anno'
+        other: 'quasi {{count}} anni'
+    prompts:
+      year: "Anno"
+      month: "Mese"
+      day: "Giorno"
+      hour: "Ora"
+      minute: "Minuto"
+      second: "Secondo"
   helpers:
     select:
       prompt: "Seleziona..."
   activerecord:
+    errors:
+      template:
+        header:
+          one: "Non è stato possibile salvare questo {{model}}: 1 errore"
+          other: "Non è stato possibile salvare questo {{model}}: {{count}} errori."
+        body: "Si sono verificati problemi con i seguenti campi:"
     models:
       appointment: "Appuntamento"
       doctor: "Dottore"
@@ -36,4 +91,52 @@ it:
       doctor:
         full_name: "Nome completo"
       patient:
-        full_name: "Nome completo" 
+        full_name: "Nome completo"
+  number:
+    format:
+      separator: ","
+      delimiter: "."
+      precision: 2
+      significant: false
+      strip_insignificant_zeros: false
+    currency:
+      format:
+        format: "%u %n"
+        unit: "€"
+        separator: ","
+        delimiter: "."
+        precision: 2
+        significant: false
+        strip_insignificant_zeros: false
+    percentage:
+      format:
+        delimiter: ""
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ""
+    human:
+      format:
+        delimiter: ""
+        precision: 1
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one:   "Byte"
+            other: "Byte"
+          kb: "KB"
+          mb: "MB"
+          gb: "GB"
+          tb: "TB"
+      decimal_units:
+        format: "%n %u"
+        units:
+          unit: ""
+          thousand: "Mila"
+          million: "Milioni"
+          billion: "Miliardi"
+          trillion: "Bilioni"
+          quadrillion: "Biliardi" 

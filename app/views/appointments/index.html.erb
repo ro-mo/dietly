@@ -1,11 +1,14 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Appuntamenti con <%= @doctor.full_name %></h1>
-    <%= link_to 'Nuovo appuntamento', new_appointment_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    <h1 class="text-2xl font-bold">I tuoi appuntamenti</h1>
+    <div class="flex space-x-4">
+      <%= link_to 'Torna alla home', root_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+      <% if Current.user.is_a?(Patient) %>
+        <%= link_to 'Nuovo appuntamento', new_appointment_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      <% end %>
+    </div>
   </div>
 
-  <% @appointments = Current.user.appointments.where(doctor: @doctor).order(start_time: :desc) %>
-  
   <% if @appointments.any? %>
     <div class="grid gap-4">
       <% @appointments.each do |appointment| %>
@@ -13,19 +16,17 @@
           <div class="flex justify-between items-start">
             <div>
               <h2 class="text-xl font-semibold mb-2">
-                Appuntamento del <%= l appointment.start_time, format: :long %>
+                Appuntamento con <%= appointment.doctor.full_name %>
               </h2>
+              <p class="text-gray-600">
+                Data: <%= l appointment.start_time, format: :long %>
+              </p>
               <p class="text-gray-600">
                 Orario: <%= l appointment.start_time, format: :time %> - <%= l appointment.end_time, format: :time %>
               </p>
               <p class="text-gray-600">
                 Stato: <span class="<%= status_color(appointment.status) %>"><%= appointment.status %></span>
               </p>
-              <% if appointment.notes.present? %>
-                <p class="text-gray-600 mt-2">
-                  Note: <%= appointment.notes %>
-                </p>
-              <% end %>
             </div>
             <div class="flex space-x-2">
               <%= link_to 'Visualizza', appointment_path(appointment), class: "text-blue-500 hover:text-blue-700" %>
@@ -40,10 +41,7 @@
     </div>
   <% else %>
     <div class="text-center py-8">
-      <p class="text-gray-600">Non hai ancora nessun appuntamento con <%= @doctor.full_name %>.</p>
-      <p class="mt-2">
-        <%= link_to 'Prenota il tuo primo appuntamento', new_appointment_path, class: "text-blue-500 hover:text-blue-700" %>
-      </p>
+      <p class="text-gray-600">Non hai ancora nessun appuntamento.</p>
     </div>
   <% end %>
-</div>
+</div> 

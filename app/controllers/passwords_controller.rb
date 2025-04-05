@@ -9,26 +9,22 @@ class PasswordsController < ApplicationController
     user = User.find_by(email_address: params[:email_address])
     
     if user
-      if user.password_reset_locked_until&.future?
-        redirect_to new_session_path, alert: "Troppi tentativi. Riprova più tardi."
-        return
-      end
-
-      if user.password_reset_attempts.to_i >= 3
-        user.update!(
-          password_reset_locked_until: 1.hour.from_now,
-          password_reset_attempts: 0
-        )
-        redirect_to new_session_path, alert: "Troppi tentativi. Riprova più tardi."
-        return
-      end
-
-      user.update!(
-        password_reset_token: SecureRandom.hex(20),
-        password_reset_sent_at: Time.current,
-        password_reset_attempts: user.password_reset_attempts.to_i + 1
-      )
-
+      # Genera un nuovo token di reset nel formato corretto
+      expiration_time = 15.minutes.from_now
+      token_data = {
+        data: [user.id, SecureRandom.urlsafe_base64],
+        exp: expiration_time.to_i,  # Converti in timestamp Unix
+        pur: "User\npassword_reset\n900"
+      }
+      user.password_reset_token = JWT.encode(token_data, Rails.application.credentials.secret_key_base)
+      user.password_reset_sent_at = expiration_time
+      
+      user.save!
+      
+      # Log del token per debug
+      Rails.logger.info "Token di reset generato: #{user.password_reset_token}"
+      puts "Token di reset generato: #{user.password_reset_token}"
+      
       PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_now
     end
 
@@ -36,6 +32,15 @@ class PasswordsController < ApplicationController
   end
 
   def edit
+    if @user.nil?
+      redirect_to new_password_path, alert: "Token non valido o già usato."
+      return
+    end
+
+    if @user.password_reset_sent_at < 15.minutes.ago
+      redirect_to new_password_path, alert: "Il link per il reset è scaduto."
+      return
+    end
   end
 
   def update
@@ -44,16 +49,26 @@ class PasswordsController < ApplicationController
       return
     end
 
-    if @user.update(password_params)
+    if params[:password].blank? || params[:password_confirmation].blank?
+      flash.now[:alert] = "La password non può essere vuota."
+      render :edit, status: :unprocessable_entity
+      return
+    end
+
+    if params[:password] != params[:password_confirmation]
+      flash.now[:alert] = "Le password non coincidono."
+      render :edit, status: :unprocessable_entity
+      return
+    end
+
+    if @user.update(password: params[:password], password_confirmation: params[:password_confirmation])
       @user.update!(
         password_reset_token: nil,
-        password_reset_sent_at: nil,
-        password_reset_attempts: 0,
-        password_reset_locked_until: nil
+        password_reset_sent_at: nil
       )
       redirect_to new_session_path, notice: "La password è stata resettata con successo."
     else
-      flash.now[:alert] = "Errore nel reset della password. Assicurati che le password coincidano e rispettino i requisiti minimi."
+      flash.now[:alert] = "Errore nel reset della password. Assicurati che la password rispetti i requisiti minimi."
       render :edit, status: :unprocessable_entity
     end
   end
@@ -67,15 +82,6 @@ class PasswordsController < ApplicationController
       redirect_to new_password_path, alert: "Token non valido o già usato."
       return
     end
-
-    if @user.password_reset_locked_until&.future?
-      redirect_to new_password_path, alert: "Questo link è stato bloccato per troppi tentativi. Richiedi un nuovo link."
-      return
-    end
-  end
-
-  def password_params
-    params.require(:user).permit(:password, :password_confirmation)
   end
 end
 

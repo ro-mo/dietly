@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "noreply@dietly.com"
+  default from: ENV["GMAIL_USERNAME"]
   layout "mailer"
 end

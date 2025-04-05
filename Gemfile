@@ -42,6 +42,16 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# JWT for secure tokens
+gem "jwt"
+
+# SendGrid for email
+gem "sendgrid-ruby", "~> 6.7"
+gem "sendgrid-actionmailer", "~> 3.0"
+
+# Windows file system monitoring
+gem 'wdm', '>= 0.1.0' if Gem.win_platform?
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -70,5 +80,3 @@ gem "letter_opener_web", "~> 3.0", :group => :development
 
 gem "dotenv-rails", "~> 3.1", :group => :development
 gem "test", "~> 1.0", :group => :development
-
-gem "sendgrid-ruby", "~> 6.7"

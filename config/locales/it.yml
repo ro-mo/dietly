@@ -1,0 +1,39 @@
+it:
+  time:
+    formats:
+      default: "%H:%M"
+      short: "%H:%M"
+      long: "%H:%M:%S"
+      time: "%H:%M"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+      long_with_time: "%d %B %Y %H:%M"
+  datetime:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y %H:%M"
+      long_with_time: "%d %B %Y %H:%M"
+  helpers:
+    select:
+      prompt: "Seleziona..."
+  activerecord:
+    models:
+      appointment: "Appuntamento"
+      doctor: "Dottore"
+      patient: "Paziente"
+    attributes:
+      appointment:
+        start_time: "Data e ora di inizio"
+        end_time: "Data e ora di fine"
+        status: "Stato"
+        notes: "Note"
+        doctor: "Dottore"
+        patient: "Paziente"
+      doctor:
+        full_name: "Nome completo"
+      patient:
+        full_name: "Nome completo" 

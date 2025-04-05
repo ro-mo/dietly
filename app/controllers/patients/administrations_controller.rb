@@ -12,6 +12,10 @@ class Patients::AdministrationsController < ApplicationController
     end
   end
 
+  def my_appointments
+    @appointments = Current.user.appointments.includes(:doctor).order(start_time: :desc)
+  end
+
   def doctor_appointments
     @doctor = Current.user.doctor
     unless @doctor

@@ -4,7 +4,6 @@ class Appointment < ApplicationRecord
 
   validates :start_time, presence: true
   validates :end_time, presence: true 
-  validates :status, inclusion: { in: %w[pending confirmed cancelled completed] }
   
   validate :end_time_after_start_time
   validate :no_overlapping_appointments

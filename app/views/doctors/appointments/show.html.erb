@@ -4,9 +4,11 @@
       <div class="flex justify-between items-start mb-6">
         <h1 class="text-2xl font-bold">Dettagli appuntamento</h1>
         <div class="flex space-x-2">
-          <%= link_to 'Torna alla lista', appointments_path, class: "text-blue-500 hover:text-blue-700" %>
-          <% if @appointment.status == 'pending' %>
-            <%= link_to 'Modifica', edit_appointment_path(@appointment), class: "text-yellow-500 hover:text-yellow-700" %>
+          <%# Usa il path corretto per tornare alla lista del dottore %>
+          <%= link_to 'Torna alla lista', doctors_appointments_path, class: "text-blue-500 hover:text-blue-700" %>
+          <%# Solo i dottori possono modificare %>
+          <% if Current.user.is_a?(Doctor) %> 
+            <%= link_to 'Modifica', edit_doctors_appointment_path(@appointment), class: "text-yellow-500 hover:text-yellow-700" %>
           <% end %>
         </div>
       </div>
@@ -14,7 +16,8 @@
       <div class="space-y-4">
         <div>
           <h2 class="text-lg font-semibold text-gray-700">Dottore</h2>
-          <p class="text-gray-600"><%= @appointment.doctor.full_name %></p>
+          <%# Il dottore è sempre l'utente corrente in questo contesto %>
+          <p class="text-gray-600"><%= @appointment.doctor.full_name %></p> 
         </div>
 
         <div>
@@ -25,14 +28,10 @@
         <div>
           <h2 class="text-lg font-semibold text-gray-700">Data e ora</h2>
           <p class="text-gray-600">
-            <%= l @appointment.start_time, format: :long %>
-            (<%= l @appointment.start_time, format: :time %> - <%= l @appointment.end_time, format: :time %>)
+            <%# Aggiungo .to_date per formattare solo la data %>
+            <%= l @appointment.start_time.to_date, format: :long if @appointment.start_time %>
+            (<%= l @appointment.start_time, format: :time if @appointment.start_time %> - <%= l @appointment.end_time, format: :time if @appointment.end_time %>)
           </p>
-        </div>
-
-        <div>
-          <h2 class="text-lg font-semibold text-gray-700">Stato</h2>
-          <p class="<%= status_color(@appointment.status) %>"><%= @appointment.status %></p>
         </div>
 
         <% if @appointment.notes.present? %>
@@ -43,9 +42,10 @@
         <% end %>
       </div>
 
-      <% if @appointment.status == 'pending' %>
+      <%# Solo i dottori possono cancellare %>
+      <% if Current.user.is_a?(Doctor) %>
         <div class="mt-6 pt-6 border-t border-gray-200">
-          <%= button_to 'Cancella appuntamento', appointment_path(@appointment), 
+          <%= button_to 'Cancella appuntamento', doctors_appointment_path(@appointment), 
               method: :delete, 
               class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded",
               data: { confirm: 'Sei sicuro di voler cancellare questo appuntamento?' } %>
@@ -53,4 +53,4 @@
       <% end %>
     </div>
   </div>
-</div>
+</div> 

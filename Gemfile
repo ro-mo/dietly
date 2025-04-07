@@ -50,7 +50,7 @@ gem "sendgrid-ruby", "~> 6.7"
 gem "sendgrid-actionmailer", "~> 3.0"
 
 # Windows file system monitoring
-gem 'wdm', '>= 0.1.0' if Gem.win_platform?
+gem "wdm", ">= 0.1.0" if Gem.win_platform?
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -76,7 +76,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "letter_opener_web", "~> 3.0", :group => :development
+gem "letter_opener_web", "~> 3.0", group: :development
 
-gem "dotenv-rails", "~> 3.1", :group => :development
-gem "test", "~> 1.0", :group => :development
+gem "dotenv-rails", "~> 3.1", group: :development
+gem "test", "~> 1.0", group: :development

@@ -4,17 +4,12 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
-  attribute :password_reset_token, :string
-  attribute :password_reset_sent_at, :datetime
-  attribute :password_reset_attempts, :integer, default: 0
-  attribute :password_reset_locked_until, :datetime
-  
   # Validazioni per la password
-  #validates :password, length: { minimum: 8 }, if: -> { new_record? || !password.nil? }
-  #validates :password, format: { 
+  # validates :password, length: { minimum: 8 }, if: -> { new_record? || !password.nil? }
+  # validates :password, format: {
   #  with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}\z/,
   #  message: "deve contenere almeno 8 caratteri, una lettera maiuscola, una minuscola, un numero e un carattere speciale"
-  #}, if: -> { new_record? || !password.nil? }
+  # }, if: -> { new_record? || !password.nil? }
 
   def full_name
     "#{first_name} #{last_name}".strip

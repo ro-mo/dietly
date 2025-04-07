@@ -11,13 +11,28 @@ class PasswordsController < ApplicationController
       # Genera un nuovo token di reset
       expiration_time = 15.minutes.from_now
       token = SecureRandom.urlsafe_base64
+
+      Rails.logger.info "Generato token di reset per l'utente #{@user.email_address}"
+
       @user.update(
         password_reset_token: token,
         password_reset_sent_at: expiration_time
       )
-      PasswordsMailer.with(user: @user, token: token).reset.deliver_later
+
+      Rails.logger.info "Token salvato nel database. Invio email..."
+
+      # Invio dell'email direttamente (per debug)
+      begin
+        result = PasswordsMailer.with(user: @user, token: token).reset.deliver_now
+        Rails.logger.info "Email inviata con successo: #{result.message_id}"
+      rescue => e
+        Rails.logger.error "Errore nell'invio dell'email: #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
+      end
+
       redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
     else
+      Rails.logger.info "Tentativo di reset password per un utente non esistente: #{params[:email_address]}"
       redirect_to new_password_path, alert: "Email non trovata"
     end
   end
@@ -30,7 +45,7 @@ class PasswordsController < ApplicationController
 
     if @user.password_reset_sent_at < 15.minutes.ago
       redirect_to new_password_path, alert: "Il link per il reset è scaduto."
-      return
+      nil
     end
   end
 
@@ -73,7 +88,7 @@ class PasswordsController < ApplicationController
 
     @user = User.find_by(password_reset_token: token)
     Rails.logger.info "Utente trovato: #{@user.inspect}"
-    
+
     unless @user
       Rails.logger.info "Utente non trovato con il token fornito"
       redirect_to new_password_path, alert: "Token scaduto o non valido"
@@ -84,8 +99,7 @@ class PasswordsController < ApplicationController
       Rails.logger.info "Token scaduto"
       Rails.logger.info "Data invio: #{@user.password_reset_sent_at}"
       redirect_to new_password_path, alert: "Token scaduto o non valido"
-      return
+      nil
     end
   end
 end
-

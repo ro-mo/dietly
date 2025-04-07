@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, only: [ :new, :create, :edit, :update ] do
     get :edit, on: :collection, as: :edit
+    patch :update, on: :collection
   end
 
   namespace :doctors do

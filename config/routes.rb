@@ -11,13 +11,16 @@ Rails.application.routes.draw do
     # Route per i medici
     namespace :administrations do
       get "patients_management", to: "patients#index"
+<<<<<<< Updated upstream
       get "diets_management", to: "diets#index"
       get "appointment_management" , to: "appointment#index"
+=======
+>>>>>>> Stashed changes
       resources :patients, only: [:edit, :update]
 
-      namespace :diets do
-        get "diet_creation", to: "diet_creation"
-      end
+      # Sostituiamo la route singola con una risorsa completa per le diete
+      # get "diets_management", to: "diets#index" # Rimossa
+      resources :diets, path: "diets_management", as: :diets # Usa il percorso "diets_management" ma helper standard
     end
     resources :appointments, only: [:index, :new, :create, :edit, :update, :destroy, :show]
   end

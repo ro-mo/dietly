@@ -2,17 +2,18 @@
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Diete</h1>
     <div class="flex space-x-4">
-      <%= link_to "Torna alla lista", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
-      <%= link_to "Crea Nuova Dieta", doctors_administrations_diets_diet_creation_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+      <%= link_to "Torna alla gestione pazienti", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
+      <%= link_to "Crea Nuova Dieta", new_doctors_administrations_diet_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
     </div>
   </div>
 
-  <% if @diet_plan.present? %>
+  <% if @diet_plans.present? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead class="bg-gray-50 dark:bg-gray-700">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Paziente</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Titolo Piano</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Inizio</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Fine</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stato</th>
@@ -20,21 +21,26 @@
           </tr>
         </thead>
         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          <% @diet_plan.each do |diet| %>
+          <% @diet_plans.each do |diet| %>
             <tr>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
-                  <%= diet.first_name %> <%= diet.last_name %>
+                  <%= diet.patient&.full_name || "Paziente non trovato" %>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                  <%= diet.start_date.strftime("%d/%m/%Y") %>
+                  <%= diet.title %>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                  <%= diet.end_date.strftime("%d/%m/%Y") %>
+                  <%= l(diet.start_date, format: :short) if diet.start_date %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <%= l(diet.end_date, format: :short) if diet.end_date %>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -44,13 +50,13 @@
                   </span>
                 <% else %>
                   <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
-                    Completata
+                    Inattiva
                   </span>
                 <% end %>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <%= link_to "Visualizza", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300 mr-3" %>
-                <%= link_to "Modifica", "#", class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300" %>
+                <%= link_to "Modifica", edit_doctors_administrations_diet_path(diet), class: "text-marmorean-600 hover:text-marmorean-900 dark:text-marmorean-400 dark:hover:text-marmorean-300 mr-3" %>
+                <%= link_to "Elimina", doctors_administrations_diet_path(diet), data: { turbo_method: :delete, turbo_confirm: "Sei sicuro di voler eliminare questo piano dietetico?" }, class: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" %>
               </td>
             </tr>
           <% end %>
@@ -59,8 +65,8 @@
     </div>
   <% else %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center">
-      <p class="text-gray-500 dark:text-gray-400">Non ci sono diete da mostrare.</p>
-      <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Crea una nuova dieta per iniziare.</p>
+      <p class="text-gray-500 dark:text-gray-400">Non ci sono piani dietetici da mostrare.</p>
+      <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Crea un nuovo piano dietetico per iniziare.</p>
     </div>
   <% end %>
 </div> 

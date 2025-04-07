@@ -1,0 +1,34 @@
+<%# Rimosso log di debug per foods %>
+
+<div class="mealfood-fields grid grid-cols-1 md:grid-cols-5 gap-2 items-end border-t border-gray-100 pt-2">
+  <%# Usa l'indice corretto o 'NEW_RECORD' per i nuovi record %>
+  <% index = defined?(index) ? index : form.index %>
+
+  <%# Campo nascosto per l'ID (necessario per l'aggiornamento) %>
+  <%= form.hidden_field :id %>
+  <%# Campo nascosto per la distruzione (necessario per la rimozione) %>
+  <%= form.hidden_field :_destroy %>
+
+  <div class="md:col-span-2"> <%# Allarga il campo nome %>
+    <%= form.label :ingredient_name, "Ingrediente", class: "block text-xs font-medium text-gray-600" %>
+    <%= form.text_field :ingredient_name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "Nome Ingrediente" %>
+  </div>
+  <div>
+    <%= form.label :quantity, "Quantità", class: "block text-xs font-medium text-gray-600" %>
+    <%= form.number_field :quantity, step: "any", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "Quantità" %>
+  </div>
+  <div>
+    <%= form.label :unit, "Unità", class: "block text-xs font-medium text-gray-600" %>
+    <%= form.text_field :unit, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "g, kg, etc." %>
+  </div>
+  <div class="flex items-center justify-end">
+    <button type="button"
+            class="remove-mealfood-button text-xs text-red-600 hover:text-red-800"
+            data-action="click->nested-form#remove">
+      Rimuovi
+    </button>
+  </div>
+  <%# Rimosso campo unità separato, gestito con nome/quantità %>
+  <%# <div class="col-span-full"> ... note ... </div> %>
+  <%# Nota: se le note sono ancora utili, vanno reimplementate nel layout %>
+</div> 

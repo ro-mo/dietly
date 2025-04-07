@@ -1,0 +1,8 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800">Modifica Piano Dietetico: <%= @diet_plan.title %></h1>
+    <%= link_to 'Annulla', doctors_administrations_diets_path, class: "text-gray-600 hover:text-gray-800" %>
+  </div>
+
+  <%= render 'form', diet_plan: @diet_plan %>
+</div> 

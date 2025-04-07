@@ -1,15 +1,17 @@
 class Meal < ApplicationRecord  
   belongs_to :daily_menu
+  belongs_to :diet
 
-  has_many :mealfood, dependent: :destroy
+  has_many :mealfoods, dependent: :destroy
+  # Rimosso: has_many :foods, through: :mealfoods
+
+  # Setup for nested forms
+  accepts_nested_attributes_for :mealfoods, allow_destroy: true, reject_if: :all_blank
 
   validates :daily_menu_id, presence: true
-  validates :meal_type, presence: true, inclusion: { in: %w[breakfast lunch dinner snack] }
-  validates :calories, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :proteins, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :carbohydrates, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :fats, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :fiber, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :meal_type, presence: true, inclusion: { in: %w[colazione snack_mattina pranzo snack_pomeriggio cena] }
+  validates :name, presence: true
+  validates :time, presence: true
 
   def add_food(food, quantity)
     return false unless food && quantity.positive?
@@ -44,14 +46,42 @@ class Meal < ApplicationRecord
     save
   end
 
-  def nutritional_values
-    {
-      calories: calories.to_f,
-      proteins: proteins.to_f, 
-      carbohydrates: carbohydrates.to_f,
-      fats: fats.to_f,
-      fiber: fiber.to_f
-    }
+  # Metodi per calcolare i totali nutrizionali
+  def total_calories
+    mealfoods.matched.sum(:calories)
   end
-  
+
+  def total_proteins
+    mealfoods.matched.sum(:proteins)
+  end
+
+  def total_carbohydrates
+    mealfoods.matched.sum(:carbohydrates)
+  end
+
+  def total_fats
+    mealfoods.matched.sum(:fats)
+  end
+
+  def total_fiber
+    mealfoods.matched.sum(:fiber)
+  end
+
+  # Metodo per aggiornare i totali
+  def update_nutritional_totals
+    update(
+      calories: total_calories,
+      proteins: total_proteins,
+      carbohydrates: total_carbohydrates,
+      fats: total_fats,
+      fiber: total_fiber
+    )
+  end
+
+  # I metodi di calcolo nutrizionale basati su Food non sono più validi
+  # Commentati o da rimuovere/adattare
+  # def total_calories
+  #   ...
+  # end
+  # ... altri metodi total_... e nutritional_values ...
 end

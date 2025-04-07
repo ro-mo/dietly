@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_191919) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_06_153521) do
   create_table "appointments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -20,6 +20,71 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_191919) do
     t.datetime "end_time"
     t.string "status"
     t.text "notes"
+  end
+
+  create_table "daily_menus", force: :cascade do |t|
+    t.integer "diet_plan_id", null: false
+    t.integer "day_of_week"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["diet_plan_id"], name: "index_daily_menus_on_diet_plan_id"
+  end
+
+  create_table "diet_plans", force: :cascade do |t|
+    t.integer "patient_id", null: false
+    t.integer "doctor_id", null: false
+    t.string "title"
+    t.date "start_date"
+    t.date "end_date"
+    t.boolean "active", default: true
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_id"], name: "index_diet_plans_on_doctor_id"
+    t.index ["patient_id"], name: "index_diet_plans_on_patient_id"
+  end
+
+  create_table "foods", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.text "description"
+    t.decimal "calories_per_100g", precision: 8, scale: 2
+    t.decimal "proteins_per_100g", precision: 8, scale: 2
+    t.decimal "carbohydrates_per_100g", precision: 8, scale: 2
+    t.decimal "fats_per_100g", precision: 8, scale: 2
+    t.decimal "fiber_per_100g", precision: 8, scale: 2
+    t.string "serving_size"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_foods_on_category"
+    t.index ["name"], name: "index_foods_on_name"
+  end
+
+  create_table "mealfoods", force: :cascade do |t|
+    t.integer "meal_id", null: false
+    t.decimal "quantity", precision: 8, scale: 2
+    t.string "unit"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ingredient_name"
+    t.index ["meal_id"], name: "index_mealfoods_on_meal_id"
+  end
+
+  create_table "meals", force: :cascade do |t|
+    t.integer "daily_menu_id", null: false
+    t.string "meal_type"
+    t.string "time_suggestion"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "calories", precision: 10, scale: 2, default: "0.0"
+    t.decimal "proteins", precision: 10, scale: 2, default: "0.0"
+    t.decimal "carbohydrates", precision: 10, scale: 2, default: "0.0"
+    t.decimal "fats", precision: 10, scale: 2, default: "0.0"
+    t.decimal "fiber", precision: 10, scale: 2, default: "0.0"
+    t.index ["daily_menu_id"], name: "index_meals_on_daily_menu_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -54,6 +119,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_191919) do
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
   end
 
+  add_foreign_key "daily_menus", "diet_plans"
+  add_foreign_key "diet_plans", "users", column: "doctor_id"
+  add_foreign_key "diet_plans", "users", column: "patient_id"
+  add_foreign_key "mealfoods", "meals"
+  add_foreign_key "meals", "daily_menus"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "users", column: "doctor_id"
 end

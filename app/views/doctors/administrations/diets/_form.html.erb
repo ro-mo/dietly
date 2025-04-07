@@ -1,0 +1,121 @@
+<%# Determina l'URL corretto in base allo stato del record %>
+<% url = diet_plan.persisted? ? doctors_administrations_diet_path(diet_plan) : doctors_administrations_diets_path %>
+
+<%= form_with(model: diet_plan, url: url, scope: :diet_plan, class: "space-y-6", data: { controller: "nested-form" }) do |form| %>
+  <% if diet_plan.errors.any? %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <strong class="font-bold">Errore!</strong>
+      <span class="block sm:inline">Non è stato possibile salvare il piano dietetico:</span>
+      <ul class="list-disc list-inside">
+        <% diet_plan.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Campi Principali DietPlan %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <%# Mostra nome paziente (non modificabile) e campo nascosto %>
+      <%= form.label :patient_id, "Paziente", class: "block text-sm font-medium text-gray-700" %>
+      <% patient_name = @patient&.full_name || (@diet_plan.patient&.full_name || "Non selezionato") %>
+      <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 px-3 py-2 shadow-sm sm:text-sm"><%= patient_name %></p>
+      <%= form.hidden_field :patient_id %>
+    </div>
+    <div>
+      <%= form.label :title, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+    </div>
+    <div>
+      <%= form.label :active, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.check_box :active, class: "mt-1 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+    <div>
+      <%= form.label :start_date, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.date_field :start_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+    </div>
+    <div>
+      <%= form.label :end_date, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.date_field :end_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+    </div>
+  </div>
+  <div>
+    <%= form.label :notes, "Note Generali Piano", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+  </div>
+
+  <hr class="my-6">
+
+  <%# Campi Nidificati DailyMenus %>
+  <h2 class="text-xl font-semibold mb-4">Menu Settimanale</h2>
+  <div class="space-y-8">
+    <%# Ordina i daily_menus per day_of_week prima dell'iterazione %>
+    <%= form.fields_for :daily_menus, @diet_plan.daily_menus.sort_by(&:day_of_week) do |daily_menu_form| %>
+      <div class="border border-gray-200 p-4 rounded-lg bg-white shadow-sm">
+        <h3 class="text-lg font-medium mb-3"><%= Date::DAYNAMES[daily_menu_form.object.day_of_week % 7] %></h3>
+        <%= daily_menu_form.hidden_field :day_of_week %>
+
+        <div>
+          <%= daily_menu_form.label :notes, "Note Giorno", class: "block text-sm font-medium text-gray-700 sr-only" %>
+          <%= daily_menu_form.text_area :notes, rows: 2, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Note per #{Date::DAYNAMES[daily_menu_form.object.day_of_week % 7]}..." %>
+        </div>
+
+        <%# Campi Nidificati Meals %>
+        <div class="mt-4 space-y-4">
+          <% meal_types_order = %w[colazione snack_mattina pranzo snack_pomeriggio cena] %>
+          <%# Ordina i meals in base all'ordine definito in meal_types_order %>
+          <%= daily_menu_form.fields_for :meals, daily_menu_form.object.meals.sort_by { |m| meal_types_order.index(m.meal_type) || 99 } do |meal_form| %>
+            <div class="border border-gray-100 p-3 rounded-md bg-gray-50">
+              <h4 class="font-medium capitalize mb-2"><%= meal_form.object.meal_type.gsub("_", " ") %></h4>
+              <%= meal_form.hidden_field :meal_type %>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                 <div>
+                    <%= meal_form.label :time_suggestion, "Orario Suggerito", class: "block text-sm font-medium text-gray-700 sr-only" %>
+                    <%= meal_form.time_field :time_suggestion, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Orario Suggerito" %>
+                 </div>
+                 <div>
+                    <%= meal_form.label :description, "Descrizione Pasto", class: "block text-sm font-medium text-gray-700 sr-only" %>
+                    <%= meal_form.text_field :description, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Descrizione Pasto" %>
+                 </div>
+              </div>
+
+              <%# Campi Nidificati MealFoods (Ingredienti) %>
+              <div class="mealfoods-container space-y-2 mb-2">
+                <h5 class="text-sm font-medium text-gray-600">Ingredienti:</h5>
+                <%= meal_form.fields_for :mealfoods do |mealfood_form| %>
+                  <%= render "mealfood_fields", form: mealfood_form %>
+                <% end %>
+              </div>
+              <%# Genera il template HTML usando fields_for per un nuovo mealfood %>
+              <% template = capture do %>
+                <% meal_form.fields_for :mealfoods, Mealfood.new, child_index: 'NEW_RECORD' do |builder| %>
+                  <%= render('mealfood_fields', form: builder) %>
+                <% end %>
+              <% end %>
+              <%# Aggiunta data-action per Stimulus %>
+              <button type="button"
+                      class="add-mealfood-button text-sm text-indigo-600 hover:text-indigo-800"
+                      data-action="click->nested-form#add"
+                      data-template-html="<%= CGI.escapeHTML(template) %>">
+                + Aggiungi Ingrediente
+              </button>
+
+            </div> <%# End Meal %>
+          <% end %>
+        </div> <%# End Meals container %>
+
+      </div> <%# End Daily Menu %>
+    <% end %>
+  </div> <%# End Daily Menus container %>
+
+  <div class="flex justify-end mt-8">
+    <%= form.submit "Salva Piano Dietetico", class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+  </div>
+<% end %>
+
+<%# Template per i campi MealFood (usato da JavaScript) %>
+<template id="mealfood-template">
+  <%# Questo contenuto viene riempito dinamicamente dal JS usando l'HTML escapato nel data attribute del bottone %>
+</template> 

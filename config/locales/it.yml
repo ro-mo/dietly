@@ -76,11 +76,24 @@ it:
           one: "Non è stato possibile salvare questo {{model}}: 1 errore"
           other: "Non è stato possibile salvare questo {{model}}: {{count}} errori."
         body: "Si sono verificati problemi con i seguenti campi:"
+      messages:
+        blank: "è obbligatorio"
     models:
       appointment: "Appuntamento"
       doctor: "Dottore"
       patient: "Paziente"
+      meal: "Pasto"
+      daily_menu: "Menu Giornaliero"
+      diet_plan: "Piano Dietetico"
     attributes:
+      meal:
+        daily_menu_id: "Menu Giornaliero"
+        description: "Descrizione"
+        time_suggestion: "Ora"
+        meal_type: "Tipo Pasto"
+      daily_menu:
+        diet_plan_id: "Piano Dietetico"
+        day_of_week: "Giorno della Settimana"
       appointment:
         start_time: "Data e ora di inizio"
         end_time: "Data e ora di fine"

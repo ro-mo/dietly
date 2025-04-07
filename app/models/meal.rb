@@ -1,6 +1,5 @@
 class Meal < ApplicationRecord  
   belongs_to :daily_menu
-  belongs_to :diet
 
   has_many :mealfoods, dependent: :destroy
   # Rimosso: has_many :foods, through: :mealfoods
@@ -10,8 +9,8 @@ class Meal < ApplicationRecord
 
   validates :daily_menu_id, presence: true
   validates :meal_type, presence: true, inclusion: { in: %w[colazione snack_mattina pranzo snack_pomeriggio cena] }
-  validates :name, presence: true
-  validates :time, presence: true
+  validates :description, presence: true
+  validates :time_suggestion, presence: true
 
   def add_food(food, quantity)
     return false unless food && quantity.positive?

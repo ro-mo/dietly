@@ -47,71 +47,75 @@
 
   <hr class="my-6">
 
-  <%# Campi Nidificati DailyMenus %>
-  <h2 class="text-xl font-semibold mb-4">Menu Settimanale</h2>
-  <div class="space-y-8">
-    <%# Ordina i daily_menus per day_of_week prima dell'iterazione %>
-    <%= form.fields_for :daily_menus, @diet_plan.daily_menus.sort_by(&:day_of_week) do |daily_menu_form| %>
-      <div class="border border-gray-200 p-4 rounded-lg bg-white shadow-sm">
-        <h3 class="text-lg font-medium mb-3"><%= Date::DAYNAMES[daily_menu_form.object.day_of_week % 7] %></h3>
-        <%= daily_menu_form.hidden_field :day_of_week %>
+  <%# Template per i nuovi campi mealfood %>
+  <% template = render 'mealfood_fields', form: form, index: 'NEW_RECORD' %>
+  <% encoded_template = URI.encode_www_form_component(template) %>
 
-        <div>
-          <%= daily_menu_form.label :notes, "Note Giorno", class: "block text-sm font-medium text-gray-700 sr-only" %>
-          <%= daily_menu_form.text_area :notes, rows: 2, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Note per #{Date::DAYNAMES[daily_menu_form.object.day_of_week % 7]}..." %>
+  <%# Menu Giornalieri %>
+  <div class="space-y-6">
+    <%= form.fields_for :daily_menus do |menu_form| %>
+      <div class="border rounded-lg p-4 bg-white shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <%= menu_form.label :day_of_week, "Giorno", class: "block text-sm font-medium text-gray-700" %>
+            <%= menu_form.select :day_of_week, 
+                options_for_select([
+                  ['Lunedì', 1], ['Martedì', 2], ['Mercoledì', 3],
+                  ['Giovedì', 4], ['Venerdì', 5], ['Sabato', 6], ['Domenica', 7]
+                ], menu_form.object.day_of_week),
+                { include_blank: 'Seleziona giorno' },
+                class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          </div>
+          <%= menu_form.hidden_field :id %>
+          <%= menu_form.hidden_field :_destroy %>
         </div>
 
-        <%# Campi Nidificati Meals %>
-        <div class="mt-4 space-y-4">
-          <% meal_types_order = %w[colazione snack_mattina pranzo snack_pomeriggio cena] %>
-          <%# Ordina i meals in base all'ordine definito in meal_types_order %>
-          <%= daily_menu_form.fields_for :meals, daily_menu_form.object.meals.sort_by { |m| meal_types_order.index(m.meal_type) || 99 } do |meal_form| %>
-            <div class="border border-gray-100 p-3 rounded-md bg-gray-50">
-              <h4 class="font-medium capitalize mb-2"><%= meal_form.object.meal_type.gsub("_", " ") %></h4>
-              <%= meal_form.hidden_field :meal_type %>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                 <div>
-                    <%= meal_form.label :time_suggestion, "Orario Suggerito", class: "block text-sm font-medium text-gray-700 sr-only" %>
-                    <%= meal_form.time_field :time_suggestion, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Orario Suggerito" %>
-                 </div>
-                 <div>
-                    <%= meal_form.label :description, "Descrizione Pasto", class: "block text-sm font-medium text-gray-700 sr-only" %>
-                    <%= meal_form.text_field :description, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Descrizione Pasto" %>
-                 </div>
+        <%# Pasti %>
+        <div class="space-y-4">
+          <%= menu_form.fields_for :meals do |meal_form| %>
+            <div class="border rounded p-4 bg-gray-50">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <%= meal_form.label :meal_type, "Tipo Pasto", class: "block text-sm font-medium text-gray-700" %>
+                  <%= meal_form.select :meal_type,
+                      options_for_select([
+                        ['Colazione', 'breakfast'],
+                        ['Pranzo', 'lunch'],
+                        ['Cena', 'dinner'],
+                        ['Spuntino', 'snack']
+                      ], meal_form.object.meal_type),
+                      { include_blank: 'Seleziona tipo' },
+                      class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                </div>
+                <%= meal_form.hidden_field :id %>
+                <%= meal_form.hidden_field :_destroy %>
               </div>
 
-              <%# Campi Nidificati MealFoods (Ingredienti) %>
-              <div class="mealfoods-container space-y-2 mb-2">
-                <h5 class="text-sm font-medium text-gray-600">Ingredienti:</h5>
+              <%# Ingredienti %>
+              <div class="mealfoods-container space-y-2">
                 <%= meal_form.fields_for :mealfoods do |mealfood_form| %>
-                  <%= render "mealfood_fields", form: mealfood_form %>
+                  <%= render 'mealfood_fields', form: mealfood_form %>
                 <% end %>
               </div>
-              <%# Genera il template HTML usando fields_for per un nuovo mealfood %>
-              <% template = capture do %>
-                <% meal_form.fields_for :mealfoods, Mealfood.new, child_index: 'NEW_RECORD' do |builder| %>
-                  <%= render('mealfood_fields', form: builder) %>
-                <% end %>
-              <% end %>
-              <%# Aggiunta data-action per Stimulus %>
+
+              <%# Pulsante Aggiungi Ingrediente %>
               <button type="button"
-                      class="add-mealfood-button text-sm text-indigo-600 hover:text-indigo-800"
-                      data-action="click->nested-form#add"
-                      data-template-html="<%= CGI.escapeHTML(template) %>">
+                      class="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
+                      data-action="nested-form#add"
+                      data-template-html="<%= encoded_template %>">
                 + Aggiungi Ingrediente
               </button>
-
-            </div> <%# End Meal %>
+            </div>
           <% end %>
-        </div> <%# End Meals container %>
-
-      </div> <%# End Daily Menu %>
+        </div>
+      </div>
     <% end %>
-  </div> <%# End Daily Menus container %>
+  </div>
 
-  <div class="flex justify-end mt-8">
-    <%= form.submit "Salva Piano Dietetico", class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+  <%# Pulsanti di azione %>
+  <div class="flex justify-end space-x-4">
+    <%= link_to "Annulla", doctors_administrations_diets_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= form.submit class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
   </div>
 <% end %>
 

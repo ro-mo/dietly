@@ -4,6 +4,11 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  attribute :password_reset_token, :string
+  attribute :password_reset_sent_at, :datetime
+  attribute :password_reset_attempts, :integer, default: 0
+  attribute :password_reset_locked_until, :datetime
+  
   # Validazioni per la password
   #validates :password, length: { minimum: 8 }, if: -> { new_record? || !password.nil? }
   #validates :password, format: { 

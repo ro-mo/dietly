@@ -28,7 +28,14 @@ export default class extends Controller {
     const decodedHtml = decodeURIComponent(templateHtml.replace(/\+/g, ' '));
     const newIndex = new Date().getTime();
     const newFields = decodedHtml.replace(/NEW_RECORD/g, newIndex);
-    container.insertAdjacentHTML('beforeend', newFields);
+    
+    // Inserisci il nuovo campo prima del pulsante "Aggiungi"
+    const addButton = container.querySelector('[data-action="nested-form#add"]');
+    if (addButton) {
+      addButton.insertAdjacentHTML('beforebegin', newFields);
+    } else {
+      container.insertAdjacentHTML('beforeend', newFields);
+    }
   }
 
   remove(event) {

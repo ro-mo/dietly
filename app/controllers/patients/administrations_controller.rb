@@ -3,7 +3,7 @@ class Patients::AdministrationsController < ApplicationController
 
   def diet_routine
     begin
-      @current_diet = Current.user.diet_plan.active.first
+      @current_diet = Current.user.diet_plans.active.first
       unless @current_diet
         redirect_to root_path, alert: "Non hai ancora un piano dietetico attivo. Contatta il tuo dottore per ricevere un piano personalizzato."
       end

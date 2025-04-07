@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resource :session
-  resources :passwords, only: [:new, :create, :edit, :update] do
+  resources :passwords, only: [ :new, :create, :edit, :update ] do
     get :edit, on: :collection, as: :edit
   end
 
@@ -11,25 +11,22 @@ Rails.application.routes.draw do
     # Route per i medici
     namespace :administrations do
       get "patients_management", to: "patients#index"
-<<<<<<< Updated upstream
-      get "diets_management", to: "diets#index"
-      get "appointment_management" , to: "appointment#index"
-=======
->>>>>>> Stashed changes
-      resources :patients, only: [:edit, :update]
+      resources :patients, only: [ :edit, :update ]
 
       # Sostituiamo la route singola con una risorsa completa per le diete
       # get "diets_management", to: "diets#index" # Rimossa
       resources :diets, path: "diets_management", as: :diets # Usa il percorso "diets_management" ma helper standard
     end
-    resources :appointments, only: [:index, :new, :create, :edit, :update, :destroy, :show]
+    resources :appointments, only: [ :index, :new, :create, :edit, :update, :destroy, :show ]
   end
 
   namespace :patients do
     get "signup", to: "registrations#new"
     post "signup", to: "registrations#create"
-    get "diet_routine", to: "administrations#diet_routine"
-    get "doctor_appointments", to: "administrations#doctor_appointments"
+    namespace :administrations do
+      get "diet_routine", to: "diet_routine"
+      get "my_appointments", to: "my_appointments"
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

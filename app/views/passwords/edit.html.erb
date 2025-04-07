@@ -5,29 +5,22 @@
         Reimposta la tua password
       </h2>
     </div>
-    <%= form_with url: password_path, method: :patch, class: "mt-8 space-y-6" do |form| %>
+    <%= form_with url: passwords_path, method: :patch, class: "mt-8 space-y-6" do |form| %>
       <%= form.hidden_field :token, value: params[:token] %>
       
       <div class="rounded-md shadow-sm -space-y-px">
         <div>
           <%= form.label :password, "Nuova password", class: "sr-only" %>
-          <%= form.password_field :password, 
-              required: true, 
-              class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm",
-              placeholder: "Nuova password" %>
+          <%= form.password_field :password, required: true, class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm", placeholder: "Nuova password" %>
         </div>
         <div>
-          <%= form.label :password_confirmation, "Conferma nuova password", class: "sr-only" %>
-          <%= form.password_field :password_confirmation, 
-              required: true, 
-              class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm",
-              placeholder: "Conferma nuova password" %>
+          <%= form.label :password_confirmation, "Conferma password", class: "sr-only" %>
+          <%= form.password_field :password_confirmation, required: true, class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm", placeholder: "Conferma password" %>
         </div>
       </div>
 
       <div>
-        <%= form.submit "Aggiorna password", 
-            class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        <%= form.submit "Aggiorna password", class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
       </div>
     <% end %>
   </div>

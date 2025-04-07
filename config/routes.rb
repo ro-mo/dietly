@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resource :session
-  resources :passwords, param: :token
+  resources :passwords, only: [:new, :create, :edit, :update] do
+    get :edit, on: :collection, as: :edit
+  end
 
   namespace :doctors do
     get "signup", to: "registrations#new"
@@ -10,6 +12,7 @@ Rails.application.routes.draw do
     namespace :administrations do
       get "patients_management", to: "patients#index"
       get "diets_management", to: "diets#index"
+      get "appointment_management" , to: "appointment#index"
       resources :patients, only: [:edit, :update]
 
       namespace :diets do
@@ -22,10 +25,8 @@ Rails.application.routes.draw do
   namespace :patients do
     get "signup", to: "registrations#new"
     post "signup", to: "registrations#create"
-
-    # Definiamo le rotte direttamente puntando al controller corretto e mantenendo gli helper
-    get "administrations/diet_routine", to: "administrations#diet_routine", as: :administrations_diet_routine
-    get "administrations/my_appointments", to: "administrations#my_appointments", as: :administrations_my_appointments
+    get "diet_routine", to: "administrations#diet_routine"
+    get "doctor_appointments", to: "administrations#doctor_appointments"
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -6,29 +6,20 @@ class PasswordsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email_address: params[:email_address])
-    
-    if user
-      # Genera un nuovo token di reset nel formato corretto
+    @user = User.find_by(email_address: params[:email_address])
+    if @user
+      # Genera un nuovo token di reset
       expiration_time = 15.minutes.from_now
-      token_data = {
-        data: [user.id, SecureRandom.urlsafe_base64],
-        exp: expiration_time.to_i,  # Converti in timestamp Unix
-        pur: "User\npassword_reset\n900"
-      }
-      user.password_reset_token = JWT.encode(token_data, Rails.application.credentials.secret_key_base)
-      user.password_reset_sent_at = expiration_time
-      
-      user.save!
-      
-      # Log del token per debug
-      Rails.logger.info "Token di reset generato: #{user.password_reset_token}"
-      puts "Token di reset generato: #{user.password_reset_token}"
-      
-      PasswordsMailer.with(user: user, token: user.password_reset_token).reset.deliver_now
+      token = SecureRandom.urlsafe_base64
+      @user.update(
+        password_reset_token: token,
+        password_reset_sent_at: expiration_time
+      )
+      PasswordsMailer.with(user: @user, token: token).reset.deliver_later
+      redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
+    else
+      redirect_to new_password_path, alert: "Email non trovata"
     end
-
-    redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
   end
 
   def edit
@@ -76,10 +67,23 @@ class PasswordsController < ApplicationController
   private
 
   def set_user_by_token
-    @user = User.find_by(password_reset_token: params[:token])
+    token = params[:token]
+    Rails.logger.info "Token ricevuto: #{token}"
+    return redirect_to new_password_path, alert: "Token mancante" unless token
 
-    if @user.nil?
-      redirect_to new_password_path, alert: "Token non valido o già usato."
+    @user = User.find_by(password_reset_token: token)
+    Rails.logger.info "Utente trovato: #{@user.inspect}"
+    
+    unless @user
+      Rails.logger.info "Utente non trovato con il token fornito"
+      redirect_to new_password_path, alert: "Token scaduto o non valido"
+      return
+    end
+
+    if @user.password_reset_sent_at < 15.minutes.ago
+      Rails.logger.info "Token scaduto"
+      Rails.logger.info "Data invio: #{@user.password_reset_sent_at}"
+      redirect_to new_password_path, alert: "Token scaduto o non valido"
       return
     end
   end

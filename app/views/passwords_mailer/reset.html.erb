@@ -3,7 +3,7 @@
 <p>Abbiamo ricevuto una richiesta di reimpostazione della tua password.</p>
 
 <p>
-  <a href="<%= edit_password_url(@user, token: @token) %>">
+  <a href="http://localhost:3000/passwords/edit?token=<%= @token %>">
     Clicca qui per reimpostare la tua password
   </a>
 </p>

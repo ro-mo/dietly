@@ -42,9 +42,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_191919) do
     t.string "phone"
     t.string "fiscal_code"
     t.integer "doctor_id"
+    t.string "albo_id"
     t.string "verification_status"
+    t.string "password_reset_token"
+    t.datetime "password_reset_sent_at"
+    t.integer "password_reset_attempts", default: 0
+    t.datetime "password_reset_locked_until"
     t.index ["doctor_id"], name: "index_users_on_doctor_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["password_reset_sent_at"], name: "index_users_on_password_reset_sent_at"
+    t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
   end
 
   add_foreign_key "sessions", "users"

@@ -12,6 +12,19 @@ class Patients::AdministrationsController < ApplicationController
     end
   end
 
+  def diet_history
+    @diet_plans = Current.user.diet_plans.order(created_at: :desc)
+    @current_diet = @diet_plans.active.first
+  end
+
+  def diet_details
+    @diet_plan = Current.user.diet_plans.find_by(id: params[:id])
+    
+    unless @diet_plan
+      redirect_to patients_administrations_diet_history_path, alert: "Dieta non trovata."
+    end
+  end
+
   def my_appointments
     @appointments = Current.user.appointments.includes(:doctor).order(start_time: :desc)
   end

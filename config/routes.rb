@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     post "signup", to: "registrations#create"
     namespace :administrations do
       get "diet_routine", to: "diet_routine"
+      get "diet_history", to: "diet_history"
+      get "diet_details/:id", to: "diet_details", as: :diet_details
       get "my_appointments", to: "my_appointments"
     end
   end

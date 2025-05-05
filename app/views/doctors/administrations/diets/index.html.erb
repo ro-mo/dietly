@@ -3,9 +3,19 @@
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestione Diete</h1>
     <div class="flex space-x-4">
       <%= link_to "Torna alla gestione pazienti", doctors_administrations_patients_management_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
-      <%= link_to "Crea Nuova Dieta", new_doctors_administrations_diet_path, class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
+      <%= link_to "Crea Nuova Dieta", new_doctors_administrations_diet_path(patient_id: params[:patient_id].presence), class: "px-4 py-2 bg-marmorean-500 text-white rounded-lg hover:bg-marmorean-600 transition-colors duration-300" %>
     </div>
   </div>
+
+  <%= form_with url: doctors_administrations_diets_path, method: :get, local: true, class: "mb-4" do %>
+    <div class="flex items-center space-x-2">
+      <%= select_tag :patient_id, options_from_collection_for_select(Current.user.patients, :id, :full_name, params[:patient_id]), prompt: "Filtra per paziente", class: "form-select", id: "patient_filter" %>
+      <%= submit_tag "Filtra", class: "px-2 py-1 bg-marmorean-500 text-white rounded" %>
+      <% if params[:patient_id].present? %>
+        <%= link_to "Rimuovi filtro", doctors_administrations_diets_path, class: "ml-2 text-sm text-gray-500 underline" %>
+      <% end %>
+    </div>
+  <% end %>
 
   <% if @diet_plans.present? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
@@ -69,4 +79,7 @@
       <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Crea un nuovo piano dietetico per iniziare.</p>
     </div>
   <% end %>
+
+  <%# DEBUG %>
+  <%= @patient.inspect if @patient %>
 </div> 

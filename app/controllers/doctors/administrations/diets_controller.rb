@@ -4,9 +4,17 @@ class Doctors::Administrations::DietsController < ApplicationController
   before_action :set_patients, only: [:new, :create, :edit, :update]
 
   def index
-    @diet_plans = DietPlan.where(doctor: Current.user)
-                          .includes(:patient)
-                          .order(start_date: :desc)
+    # Base query: tutte le diete del medico corrente
+    diet_plans_query = DietPlan.where(doctor: Current.user).includes(:patient)
+    
+    # Applicazione del filtro per paziente se presente
+    if params[:patient_id].present?
+      diet_plans_query = diet_plans_query.where(patient_id: params[:patient_id])
+      @patient = Patient.find_by(id: params[:patient_id])
+    end
+    
+    # Ordinamento finale
+    @diet_plans = diet_plans_query.order(start_date: :desc)
   end
 
   def new

@@ -43,9 +43,9 @@
                 <%= link_to "Modifica paziente", edit_doctors_administrations_patient_path(patient), class: "px-3 py-1 bg-marmorean-600 text-gray-700 rounded-md hover:bg-marmorean-700 transition-colors duration-200 text-sm" %>
                 <% active_diet_plan = patient.diet_plans.active.first %>
                 <% if active_diet_plan %>
-                  <%= link_to "Modifica Dieta", edit_doctors_administrations_diet_path(active_diet_plan), class: "px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 text-sm" %>
+                <%= link_to "visualizza Diete", doctors_administrations_diets_path(patient_id: patient.id), class: "px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 text-sm" %>
                 <% else %>
-                  <%= link_to "Crea Dieta", new_doctors_administrations_diet_path(patient_id: patient.id), class: "px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 text-sm" %>
+                <%= link_to "Crea Dieta", new_doctors_administrations_diet_path(patient_id: patient.id), class: "px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 text-sm" %>
                 <% end %>
               </div>
             </td>

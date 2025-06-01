@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_23_062802) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
   create_table "appointments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -69,11 +69,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_062802) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ingredient_name"
-    t.decimal "calories", precision: 10, scale: 2
-    t.decimal "proteins", precision: 10, scale: 2
-    t.decimal "carbohydrates", precision: 10, scale: 2
-    t.decimal "fats", precision: 10, scale: 2
-    t.decimal "fiber", precision: 10, scale: 2
     t.string "calculation_status", default: "pending"
     t.index ["calculation_status"], name: "index_mealfoods_on_calculation_status"
     t.index ["meal_id"], name: "index_mealfoods_on_meal_id"
@@ -91,7 +86,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_062802) do
     t.decimal "carbohydrates", precision: 10, scale: 2, default: "0.0"
     t.decimal "fats", precision: 10, scale: 2, default: "0.0"
     t.decimal "fiber", precision: 10, scale: 2, default: "0.0"
-    t.json "ingredients_json", default: []
     t.index ["daily_menu_id"], name: "index_meals_on_daily_menu_id"
   end
 

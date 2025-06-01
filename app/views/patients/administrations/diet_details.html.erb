@@ -112,4 +112,31 @@
       <p class="text-gray-500 dark:text-gray-400">Nessun piano settimanale disponibile per questa dieta.</p>
     </div>
   <% end %>
+</div>
+
+<%# Lista della Spesa Settimanale %>
+<div class="container mx-auto px-4 py-8">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div class="p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Lista della Spesa Settimanale</h2>
+      
+      <% shopping_list = @diet_plan.shopping_list %>
+      <% if shopping_list.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% shopping_list.each do |ingredient_name, data| %>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-900 dark:text-white font-medium"><%= ingredient_name.titleize %></span>
+                <span class="text-gray-600 dark:text-gray-400">
+                  <%= data[:quantity] %> <%= data[:unit] %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 dark:text-gray-400 text-center">Nessun ingrediente nella lista della spesa.</p>
+      <% end %>
+    </div>
+  </div>
 </div> 

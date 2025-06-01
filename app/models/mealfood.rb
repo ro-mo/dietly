@@ -2,7 +2,6 @@ class Mealfood < ApplicationRecord
   belongs_to :meal
   belongs_to :food, optional: true
 
-  validates :meal_id, presence: true
   validates :ingredient_name, presence: true
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit, presence: true
@@ -13,6 +12,23 @@ class Mealfood < ApplicationRecord
   scope :matched, -> { where(calculation_status: 'matched') }
   scope :unmatched, -> { where(calculation_status: 'unmatched') }
   scope :error, -> { where(calculation_status: 'error') }
+
+  # Callback per loggare i cambiamenti
+  after_initialize do |mealfood|
+    Rails.logger.debug "=== MEALFOOD INITIALIZED ==="
+    Rails.logger.debug "Mealfood ID: #{mealfood.id}"
+    Rails.logger.debug "Meal ID: #{mealfood.meal_id}"
+    Rails.logger.debug "Ingredient: #{mealfood.ingredient_name}"
+    Rails.logger.debug "Quantity: #{mealfood.quantity} #{mealfood.unit}"
+  end
+
+  after_save do |mealfood|
+    Rails.logger.debug "=== MEALFOOD SAVED ==="
+    Rails.logger.debug "Mealfood ID: #{mealfood.id}"
+    Rails.logger.debug "Meal ID: #{mealfood.meal_id}"
+    Rails.logger.debug "Ingredient: #{mealfood.ingredient_name}"
+    Rails.logger.debug "Quantity: #{mealfood.quantity} #{mealfood.unit}"
+  end
 
   # Delegate food attributes for easier access in views/forms if needed
   # delegate :name, :category, :calories_per_100g, to: :food, prefix: true
@@ -67,5 +83,10 @@ class Mealfood < ApplicationRecord
     self.calculation_status = 'error'
     save
     Rails.logger.error "Errore nel calcolo dei valori nutrizionali per Mealfood #{id}: #{e.message}"
+  end
+
+  # Callback per impostare lo stato di calcolo iniziale
+  before_validation do
+    self.calculation_status ||= 'pending'
   end
 end

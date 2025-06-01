@@ -6,7 +6,6 @@ class DailyMenu < ApplicationRecord
   # Setup for nested forms
   accepts_nested_attributes_for :meals, allow_destroy: true, reject_if: :all_blank
 
-  validates :diet_plan_id, presence: true
   validates :day_of_week, presence: true, inclusion: { in: 1..7 } # 1 = Monday, 7 = Sunday
 
   def total_calories

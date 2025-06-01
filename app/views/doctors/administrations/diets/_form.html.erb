@@ -48,7 +48,13 @@
   <hr class="my-6">
 
   <%# Template per i nuovi campi mealfood %>
-  <% template = render 'mealfood_fields', form: form, index: 'NEW_RECORD' %>
+  <% template = form.fields_for :daily_menus do |menu_form| %>
+    <% menu_form.fields_for :meals do |meal_form| %>
+      <% meal_form.fields_for :mealfoods, meal_form.object.mealfoods.build do |mealfood_form| %>
+        <%= render 'mealfood_fields', form: mealfood_form %>
+      <% end %>
+    <% end %>
+  <% end %>
   <% encoded_template = URI.encode_www_form_component(template) %>
 
   <%# Menu Giornalieri %>
@@ -74,6 +80,7 @@
           <%= menu_form.fields_for :meals do |meal_form| %>
             <div class="border rounded p-4 bg-gray-50">
               <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <%# Campi del Pasto %>
                 <div>
                   <%= meal_form.label :meal_type, "Tipo Pasto", class: "block text-sm font-medium text-gray-700" %>
                   <% meal_type_names = { 
@@ -107,27 +114,33 @@
                   <%= render 'mealfood_fields', form: mealfood_form %>
                 <% end %>
               </div>
+              <%# Template per i nuovi campi mealfood - Generato una volta per pasto %>
+              <% mealfood = Mealfood.new %>
+              <% template = meal_form.fields_for :mealfoods, mealfood, child_index: 'NEW_RECORD' do |mealfood_form| %>
+                 <%= render('mealfood_fields', form: mealfood_form) %>
+              <% end %>
+              <% encoded_template = URI.encode_www_form_component(template) %>
 
-              <%# Pulsante Aggiungi Ingrediente %>
+              <%# Bottone per aggiungere ingrediente - Deve essere nel form principale %>
               <button type="button"
                       class="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
                       data-action="nested-form#add"
                       data-template-html="<%= encoded_template %>">
                 + Aggiungi Ingrediente
               </button>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+            </div> <%# Chiusura del border rounded p-4 bg-gray-50 (Meal container) %>
+          <% end %> <%# Chiusura del meal_form.fields_for :meals %>
+        </div> <%# Chiusura del space-y-4 (Meals container) %>
+      </div> <%# Chiusura del border rounded-lg p-4 bg-white shadow-sm (Daily Menu container) %>
+    <% end %> <%# Chiusura del form.fields_for :daily_menus %>
+  </div> <%# Chiusura del space-y-6 (Daily Menus container) %>
 
   <%# Pulsanti di azione %>
   <div class="flex justify-end space-x-4">
     <%= link_to "Annulla", doctors_administrations_diets_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
     <%= form.submit class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
   </div>
-<% end %>
+<% end %> <%# Chiusura del form_with %>
 
 <%# Template per i campi MealFood (usato da JavaScript) %>
 <template id="mealfood-template">

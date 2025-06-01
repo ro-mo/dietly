@@ -85,6 +85,20 @@
                       <span class="text-sm text-gray-500 dark:text-gray-400"><%= meal.time_suggestion %></span>
                     </div>
                     <p class="text-gray-700 dark:text-gray-300"><%= meal.description %></p>
+                    
+                    <%# Lista degli ingredienti %>
+                    <% if meal.mealfoods.any? %>
+                      <div class="mt-2">
+                        <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ingredienti:</h5>
+                        <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
+                          <% meal.mealfoods.each do |mealfood| %>
+                            <li>
+                              <%= mealfood.ingredient_name %> - <%= mealfood.quantity %> <%= mealfood.unit %>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    <% end %>
                   </div>
                 <% end %>
               </div>

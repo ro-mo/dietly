@@ -52,67 +52,158 @@ class Doctors::Administrations::DietsController < ApplicationController
   end
 
   def create
-    # Crea prima il piano dietetico senza le associazioni nidificate
-    @diet_plan = DietPlan.new(
-      patient_id: params[:diet_plan][:patient_id],
-      title: params[:diet_plan][:title],
-      start_date: params[:diet_plan][:start_date],
-      end_date: params[:diet_plan][:end_date],
-      active: params[:diet_plan][:active],
-      notes: params[:diet_plan][:notes]
-    )
+    Rails.logger.debug "=== CREATE DIET PLAN START ==="
+    Rails.logger.debug "Received Params for Create: #{params.inspect}"
+    
+    # Usa diet_plan_params per includere tutti gli attributi nidificati
+    @diet_plan = DietPlan.new(diet_plan_params)
     @diet_plan.doctor = Current.user
 
-    # Salva il piano dietetico
+    # Assicurati che tutti i giorni e i pasti esistano
+    (1..7).each do |day|
+      daily_menu = @diet_plan.daily_menus.find_or_initialize_by(day_of_week: day)
+      daily_menu.diet_plan = @diet_plan # Imposta l'associazione
+      
+      meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
+      meal_times = {
+        'colazione' => '08:00',
+        'snack_mattina' => '11:00',
+        'pranzo' => '13:00',
+        'snack_pomeriggio' => '16:00',
+        'cena' => '20:00'
+      }
+      
+      meal_types.each do |type|
+        meal = daily_menu.meals.find_or_initialize_by(meal_type: type)
+        meal.daily_menu = daily_menu # Imposta l'associazione
+        meal.description = "#{type.titleize} del giorno"
+        meal.time_suggestion = meal_times[type]
+      end
+    end
+
     if @diet_plan.save
-      # Crea i giorni della settimana e i pasti
-      (1..7).each do |day|
-        daily_menu = @diet_plan.daily_menus.create!(day_of_week: day)
-        
-        # Crea tutti i tipi di pasti per ogni giorno
-        meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
-        meal_times = {
-          'colazione' => '08:00',
-          'snack_mattina' => '11:00',
-          'pranzo' => '13:00',
-          'snack_pomeriggio' => '16:00',
-          'cena' => '20:00'
-        }
-        
-        meal_types.each do |type|
-          daily_menu.meals.create!(
-            meal_type: type,
-            description: "#{type.titleize} del giorno",
-            time_suggestion: meal_times[type]
-          )
+      Rails.logger.debug "=== DIET PLAN CREATED SUCCESSFULLY ==="
+      Rails.logger.debug "Created Diet Plan:"
+      Rails.logger.debug "Daily Menus: #{@diet_plan.daily_menus.count}"
+      
+      @diet_plan.daily_menus.each do |menu|
+        Rails.logger.debug "Menu #{menu.day_of_week}:"
+        menu.meals.each do |meal|
+          Rails.logger.debug "  Meal #{meal.meal_type}:"
+          Rails.logger.debug "    Mealfoods: #{meal.mealfoods.count}"
+          meal.mealfoods.each do |mealfood|
+            Rails.logger.debug "      - #{mealfood.ingredient_name} (#{mealfood.quantity} #{mealfood.unit})"
+          end
         end
       end
       
       after_save_actions
       redirect_to doctors_administrations_diets_path, notice: 'Piano dietetico creato con successo.'
     else
+      Rails.logger.debug "=== DIET PLAN CREATION FAILED ==="
+      Rails.logger.debug "Errors: #{@diet_plan.errors.full_messages}"
       @patient = User.find_by(id: params[:diet_plan][:patient_id], type: 'Patient') if params[:diet_plan]
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    Rails.logger.debug "=== EDIT DIET PLAN START (Ensuring all Menus and Meals) ==="
+    @diet_plan = DietPlan.find(params[:id])
+    Rails.logger.debug "Diet Plan ID: #{@diet_plan.id}"
+
+    meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
+    meal_times = {
+      'colazione' => '08:00',
+      'snack_mattina' => '11:00',
+      'pranzo' => '13:00',
+      'snack_pomeriggio' => '16:00',
+      'cena' => '20:00'
+    }
+
+    # Ensure all 7 daily menus exist and all 5 meal types exist within each
+    (1..7).each do |day_of_week_num|
+      daily_menu = @diet_plan.daily_menus.find_or_initialize_by(day_of_week: day_of_week_num)
+      daily_menu.diet_plan = @diet_plan # Ensure association if new
+
+      Rails.logger.debug "  Daily Menu for Day #{day_of_week_num} (ID: #{daily_menu.id || 'new'}), Meals count: #{daily_menu.meals.count}"
+
+      # Ensure all meal types exist within this daily menu
+      existing_meal_types = daily_menu.meals.map(&:meal_type).compact
+
+      meal_types.each do |meal_type_name|
+        unless existing_meal_types.include?(meal_type_name)
+          Rails.logger.debug "    Building missing meal type: #{meal_type_name}"
+          daily_menu.meals.build(
+            meal_type: meal_type_name,
+            description: "#{meal_type_name.titleize} del giorno",
+            time_suggestion: meal_times[meal_type_name]
+          )
+        else
+           Rails.logger.debug "    Meal type already exists: #{meal_type_name}"
+        end
+      end
+
+      # Sort meals by time suggestion for consistent display in the form (in memory)
+      daily_menu.meals.target.sort_by! { |meal| meal_times[meal.meal_type] || '23:59' } # Sort meals in memory by modifying the target array
+
+      Rails.logger.debug "    Meals count (after build and sort): #{daily_menu.meals.count}"
+      daily_menu.meals.each do |meal|
+          Rails.logger.debug "      Meal ID: #{meal.id || 'new'}, Type: #{meal.meal_type}, Mealfoods count: #{meal.mealfoods.count}"
+      end
+
+    end
+
+    # Ensure all daily menus are in the collection, even if not yet saved and sort them
+    # Convert to array before sorting to avoid issues with CollectionProxy and bang methods
+    @diet_plan.daily_menus = @diet_plan.daily_menus.to_a.uniq(&:day_of_week).sort_by(&:day_of_week)
+
+    Rails.logger.debug "Total Daily Menus in collection (after all builds and sort): #{@diet_plan.daily_menus.count}"
+    Rails.logger.debug "=== EDIT DIET PLAN END ==="
   end
 
   def update
+    Rails.logger.debug "=== UPDATE DIET PLAN ==="
+    Rails.logger.debug "Params: #{params.inspect}"
+    
     # Imposta manualmente i campi daily_menu_id e diet_plan_id
     params[:diet_plan][:daily_menus_attributes]&.each do |_, daily_attrs|
       daily_attrs[:diet_plan_id] = @diet_plan.id
       
       daily_attrs[:meals_attributes]&.each do |_, meal_attrs|
         meal_attrs[:daily_menu_id] = daily_attrs[:id] if daily_attrs[:id].present?
+        
+        # Log per i mealfoods
+        if meal_attrs[:mealfoods_attributes].present?
+          Rails.logger.debug "Mealfoods per meal #{meal_attrs[:id]}:"
+          meal_attrs[:mealfoods_attributes].each do |_, mealfood_attrs|
+            Rails.logger.debug "  - #{mealfood_attrs[:ingredient_name]} (#{mealfood_attrs[:quantity]} #{mealfood_attrs[:unit]})"
+          end
+        end
       end
     end
     
     if @diet_plan.update(diet_plan_params)
+      Rails.logger.debug "=== DIET PLAN UPDATED SUCCESSFULLY ==="
+      Rails.logger.debug "Updated Diet Plan:"
+      Rails.logger.debug "Daily Menus: #{@diet_plan.daily_menus.count}"
+      
+      @diet_plan.daily_menus.each do |menu|
+        Rails.logger.debug "Menu #{menu.day_of_week}:"
+        menu.meals.each do |meal|
+          Rails.logger.debug "  Meal #{meal.meal_type}:"
+          Rails.logger.debug "    Mealfoods: #{meal.mealfoods.count}"
+          meal.mealfoods.each do |mealfood|
+            Rails.logger.debug "      - #{mealfood.ingredient_name} (#{mealfood.quantity} #{mealfood.unit})"
+          end
+        end
+      end
+      
       after_save_actions
       redirect_to doctors_administrations_diets_path, notice: 'Piano dietetico aggiornato con successo.'
     else
+      Rails.logger.debug "=== DIET PLAN UPDATE FAILED ==="
+      Rails.logger.debug "Errors: #{@diet_plan.errors.full_messages}"
       render :edit, status: :unprocessable_entity
     end
   end
@@ -142,6 +233,7 @@ class Doctors::Administrations::DietsController < ApplicationController
   end
 
   def diet_plan_params
+    Rails.logger.debug "=== DIET PLAN PARAMS ==="
     params.require(:diet_plan).permit(
       :patient_id, :title, :start_date, :end_date, :active, :notes,
       daily_menus_attributes: [
@@ -154,6 +246,8 @@ class Doctors::Administrations::DietsController < ApplicationController
         ]
       ]
     ).tap do |whitelisted|
+      Rails.logger.debug "Whitelisted params: #{whitelisted.inspect}"
+      
       # Assicurati che i daily_menus abbiano un day_of_week
       whitelisted[:daily_menus_attributes]&.each do |_, daily_attrs|
         daily_attrs[:day_of_week] ||= 1 if daily_attrs[:day_of_week].blank?

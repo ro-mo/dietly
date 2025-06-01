@@ -1,6 +1,6 @@
 <%# Rimosso log di debug per foods %>
 
-<div class="mealfood-fields grid grid-cols-1 md:grid-cols-5 gap-2 items-end border-t border-gray-100 pt-2">
+<div class="mealfood-fields grid grid-cols-1 md:grid-cols-5 gap-2 items-end border-t border-gray-100 pt-2" data-new-record="<%= form.object.new_record? %>">
   <%# Usa l'indice corretto o 'NEW_RECORD' per i nuovi record %>
   <% index = defined?(index) ? index : form.index %>
 
@@ -31,4 +31,5 @@
   <%# Rimosso campo unità separato, gestito con nome/quantità %>
   <%# <div class="col-span-full"> ... note ... </div> %>
   <%# Nota: se le note sono ancora utili, vanno reimplementate nel layout %>
-</div> 
+</div>
+

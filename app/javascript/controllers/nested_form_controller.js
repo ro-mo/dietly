@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static targets = ["template"]
+
   connect() {
     console.log("Nested Form Controller Connected!", this.element);
   }
 
   add(event) {
     console.log("Add action triggered by:", event.currentTarget);
-    event.preventDefault();
-
     const button = event.currentTarget;
     const templateHtml = button.dataset.templateHtml;
 
@@ -29,6 +29,11 @@ export default class extends Controller {
     const newIndex = new Date().getTime();
     const newFields = decodedHtml.replace(/NEW_RECORD/g, newIndex);
     
+    // Log del template decodificato
+    console.log("Template decodificato:", decodedHtml);
+    console.log("Nuovo indice:", newIndex);
+    console.log("Campi generati:", newFields);
+    
     // Inserisci il nuovo campo prima del pulsante "Aggiungi"
     const addButton = container.querySelector('[data-action="nested-form#add"]');
     if (addButton) {
@@ -40,24 +45,13 @@ export default class extends Controller {
 
   remove(event) {
     console.log("Remove action triggered by:", event.currentTarget);
-    event.preventDefault();
-
-    const button = event.currentTarget;
-    const wrapper = button.closest('.mealfood-fields');
-
-    if (!wrapper) {
-      console.error("Wrapper .mealfood-fields non trovato.");
-      return;
-    }
-
-    const destroyField = wrapper.querySelector("input[type='hidden'][name*='_destroy']");
-
-    if (destroyField) {
-      destroyField.value = '1';
-      wrapper.style.display = 'none';
-      // wrapper.classList.add('opacity-50', 'pointer-events-none');
-    } else {
+    const wrapper = event.currentTarget.closest('.mealfood-fields');
+    
+    if (wrapper.dataset.newRecord === "true") {
       wrapper.remove();
+    } else {
+      wrapper.style.display = 'none';
+      wrapper.querySelector("input[name*='_destroy']").value = 1;
     }
   }
 } 

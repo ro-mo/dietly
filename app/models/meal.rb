@@ -5,12 +5,40 @@ class Meal < ApplicationRecord
   # Rimosso: has_many :foods, through: :mealfoods
 
   # Setup for nested forms
-  accepts_nested_attributes_for :mealfoods, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :mealfoods, allow_destroy: true # , reject_if: :all_blank
 
-  validates :daily_menu_id, presence: true
   validates :meal_type, presence: true, inclusion: { in: %w[colazione snack_mattina pranzo snack_pomeriggio cena] }
   validates :description, presence: true
   validates :time_suggestion, presence: true
+
+  # Callback per loggare i cambiamenti
+  after_initialize do |meal|
+    Rails.logger.debug "=== MEAL INITIALIZED ==="
+    Rails.logger.debug "Meal ID: #{meal.id}"
+    Rails.logger.debug "Meal Type: #{meal.meal_type}"
+    Rails.logger.debug "Mealfoods count: #{meal.mealfoods.count}"
+  end
+
+  after_save do |meal|
+    Rails.logger.debug "=== MEAL SAVED ==="
+    Rails.logger.debug "Meal ID: #{meal.id}"
+    Rails.logger.debug "Meal Type: #{meal.meal_type}"
+    Rails.logger.debug "Mealfoods count: #{meal.mealfoods.count}"
+    meal.mealfoods.each do |mealfood|
+      Rails.logger.debug "  - #{mealfood.ingredient_name} (#{mealfood.quantity} #{mealfood.unit})"
+    end
+  end
+
+  # Callback per loggare i parametri degli ingredienti ricevuti
+  before_validation do
+    Rails.logger.debug "=== MEAL BEFORE VALIDATION ==="
+    Rails.logger.debug "Meal ID: #{id}"
+    Rails.logger.debug "Meal Type: #{meal_type}"
+    Rails.logger.debug "Mealfoods count: #{mealfoods.count}"
+    mealfoods.each do |mealfood|
+      Rails.logger.debug "  - #{mealfood.ingredient_name} (#{mealfood.quantity} #{mealfood.unit})"
+    end
+  end
 
   def add_food(food, quantity)
     return false unless food && quantity.positive?

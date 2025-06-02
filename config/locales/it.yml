@@ -78,6 +78,7 @@ it:
         body: "Si sono verificati problemi con i seguenti campi:"
       messages:
         blank: "è obbligatorio"
+        inclusion: "non è incluso nell'elenco"
     models:
       appointment: "Appuntamento"
       doctor: "Dottore"
@@ -85,6 +86,15 @@ it:
       meal: "Pasto"
       daily_menu: "Menu Giornaliero"
       diet_plan: "Piano Dietetico"
+      user:
+        attributes:
+          verification_status:
+            inclusion: "deve essere uno dei seguenti valori: pending, verified, rejected"
+          password:
+            too_short: "deve essere di almeno %{count} caratteri"
+            too_long: "non può essere più lunga di %{count} caratteri"
+            blank: "è obbligatoria"
+            confirmation: "non corrisponde alla conferma"
     attributes:
       meal:
         daily_menu_id: "Menu Giornaliero"
@@ -103,6 +113,9 @@ it:
         patient: "Paziente"
       doctor:
         full_name: "Nome completo"
+        attributes:
+          verification_status:
+            inclusion: "deve essere uno dei seguenti valori: pending, verified, rejected"
       patient:
         full_name: "Nome completo"
   number:

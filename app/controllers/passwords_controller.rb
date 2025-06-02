@@ -13,24 +13,33 @@ class PasswordsController < ApplicationController
       token = SecureRandom.urlsafe_base64
 
       Rails.logger.info "Generato token di reset per l'utente #{@user.email_address}"
+      Rails.logger.info "Token generato: #{token}"
+      Rails.logger.info "Data di scadenza: #{expiration_time}"
+      Rails.logger.info "Stato verifica attuale: #{@user.verification_status}"
 
-      @user.update(
-        password_reset_token: token,
-        password_reset_sent_at: expiration_time
-      )
-
-      Rails.logger.info "Token salvato nel database. Invio email..."
-
-      # Invio dell'email direttamente (per debug)
       begin
-        result = PasswordsMailer.with(user: @user, token: token).reset.deliver_now
-        Rails.logger.info "Email inviata con successo: #{result.message_id}"
-      rescue => e
-        Rails.logger.error "Errore nell'invio dell'email: #{e.message}"
-        Rails.logger.error e.backtrace.join("\n")
-      end
+        @user.update!(
+          password_reset_token: token,
+          password_reset_sent_at: expiration_time
+        )
+        
+        Rails.logger.info "Token salvato nel database. Invio email..."
+        Rails.logger.info "Token nel database dopo il salvataggio: #{@user.reload.password_reset_token}"
 
-      redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
+        # Invio dell'email direttamente (per debug)
+        begin
+          result = PasswordsMailer.with(user: @user, token: token).reset.deliver_now
+          Rails.logger.info "Email inviata con successo: #{result.message_id}"
+        rescue => e
+          Rails.logger.error "Errore nell'invio dell'email: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+        end
+
+        redirect_to new_session_path, notice: "Istruzioni per il reset della password inviate (se l'utente con quella email esiste)."
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "Errore nel salvataggio del token: #{e.record.errors.full_messages.join(', ')}"
+        redirect_to new_password_path, alert: "Errore: #{e.record.errors.full_messages.join(', ')}"
+      end
     else
       Rails.logger.info "Tentativo di reset password per un utente non esistente: #{params[:email_address]}"
       redirect_to new_password_path, alert: "Email non trovata"
@@ -88,6 +97,9 @@ class PasswordsController < ApplicationController
 
     @user = User.find_by(password_reset_token: token)
     Rails.logger.info "Utente trovato: #{@user.inspect}"
+    Rails.logger.info "Token salvato nel database: #{@user&.password_reset_token}"
+    Rails.logger.info "Data invio token: #{@user&.password_reset_sent_at}"
+    Rails.logger.info "Data attuale: #{Time.current}"
 
     unless @user
       Rails.logger.info "Utente non trovato con il token fornito"

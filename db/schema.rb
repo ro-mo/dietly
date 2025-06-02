@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_02_100115) do
   create_table "appointments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -69,6 +69,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ingredient_name"
+    t.decimal "calories", precision: 10, scale: 2
+    t.decimal "proteins", precision: 10, scale: 2
+    t.decimal "carbohydrates", precision: 10, scale: 2
+    t.decimal "fats", precision: 10, scale: 2
+    t.decimal "fiber", precision: 10, scale: 2
     t.string "calculation_status", default: "pending"
     t.index ["calculation_status"], name: "index_mealfoods_on_calculation_status"
     t.index ["meal_id"], name: "index_mealfoods_on_meal_id"
@@ -113,6 +118,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
     t.datetime "password_reset_sent_at"
     t.integer "password_reset_attempts", default: 0
     t.datetime "password_reset_locked_until"
+    t.string "verification_status"
+    t.string "albo_id"
     t.index ["doctor_id"], name: "index_users_on_doctor_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["password_reset_sent_at"], name: "index_users_on_password_reset_sent_at"

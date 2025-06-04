@@ -104,6 +104,10 @@
                   <%= meal_form.label :time_suggestion, "Ora", class: "block text-sm font-medium text-gray-700" %>
                   <%= meal_form.time_field :time_suggestion, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
                 </div>
+                <div class="md:col-span-4">
+                  <%= meal_form.label :preparation_instructions, "Istruzioni di Preparazione", class: "block text-sm font-medium text-gray-700" %>
+                  <%= meal_form.text_area :preparation_instructions, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Inserisci le istruzioni per preparare il piatto..." %>
+                </div>
                 <%= meal_form.hidden_field :id %>
                 <%= meal_form.hidden_field :_destroy %>
               </div>

@@ -17,6 +17,8 @@
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
               <%= link_to "Appuntamenti", patients_administrations_my_appointments_path, 
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
+              <%= link_to "Profilo", edit_doctors_administrations_patient_path(Current.user), 
+                class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
             <% else %>
               <%= link_to "Gestione Pazienti", doctors_administrations_patients_management_path, 
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
@@ -69,18 +71,30 @@
               <div class="space-y-6">
                 <% today_menu.meals.each do |meal| %>
                   <div class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0 last:pb-0">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                      <%= meal.name %>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <%= meal.formatted_meal_type %>
                     </h3>
+                    <p class="text-md font-medium text-marmorean-600 dark:text-marmorean-400 mb-3">
+                      <%= meal.description %>
+                    </p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <% meal.mealfoods.each do |mealfood| %>
-                        <div class="flex items-center space-x-4">
-                          <div class="flex-1">
-                            <p class="text-gray-900 dark:text-white"><%= mealfood.food.name %></p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                              <%= mealfood.quantity %> <%= mealfood.unit %>
-                            </p>
+                    <div class="ml-4 space-y-4">
+                      <div>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ingredienti:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                          <% meal.mealfoods.each do |mealfood| %>
+                            <li class="text-gray-900 dark:text-white">
+                              <%= mealfood.ingredient_name %> - <%= mealfood.quantity %> <%= mealfood.unit %>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+
+                      <% if meal.preparation_instructions.present? %>
+                        <div>
+                          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Preparazione:</p>
+                          <div class="text-gray-900 dark:text-white whitespace-pre-line">
+                            <%= meal.preparation_instructions %>
                           </div>
                         </div>
                       <% end %>
@@ -104,12 +118,12 @@
             <% shopping_list = @current_diet.shopping_list %>
             <% if shopping_list.any? %>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <% shopping_list.each do |ingredient| %>
+                <% shopping_list.each do |ingredient_name, data| %>
                   <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div class="flex-1">
-                      <p class="text-gray-900 dark:text-white"><%= ingredient[:name] %></p>
+                      <p class="text-gray-900 dark:text-white"><%= ingredient_name %></p>
                       <p class="text-sm text-gray-600 dark:text-gray-400">
-                        <%= ingredient[:quantity] %> <%= ingredient[:unit] %>
+                        <%= data[:quantity] %> <%= data[:unit] %>
                       </p>
                     </div>
                   </div>

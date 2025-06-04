@@ -1,4 +1,4 @@
-class Meal < ApplicationRecord  
+class Meal < ApplicationRecord
   belongs_to :daily_menu
 
   has_many :mealfoods, dependent: :destroy
@@ -42,7 +42,7 @@ class Meal < ApplicationRecord
 
   def add_food(food, quantity)
     return false unless food && quantity.positive?
-    
+
     self.calories += food.calories * quantity
     self.proteins += food.proteins * quantity
     self.carbohydrates += food.carbohydrates * quantity
@@ -53,7 +53,7 @@ class Meal < ApplicationRecord
 
   def remove_food(food, quantity = 1)
     return false unless food && quantity.positive?
-    
+
     self.calories -= food.calories * quantity
     self.proteins -= food.proteins * quantity
     self.carbohydrates -= food.carbohydrates * quantity
@@ -64,7 +64,7 @@ class Meal < ApplicationRecord
 
   def update_quantity(food, new_quantity)
     return false unless food && new_quantity.positive?
-    
+
     self.calories = food.calories * new_quantity
     self.proteins = food.proteins * new_quantity
     self.carbohydrates = food.carbohydrates * new_quantity
@@ -111,4 +111,21 @@ class Meal < ApplicationRecord
   #   ...
   # end
   # ... altri metodi total_... e nutritional_values ...
+
+  def formatted_meal_type
+    case meal_type
+    when "colazione"
+      "Colazione"
+    when "snack_mattina"
+      "Snack mattina"
+    when "pranzo"
+      "Pranzo"
+    when "snack_pomeriggio"
+      "Snack pomeriggio"
+    when "cena"
+      "Cena"
+    else
+      meal_type.titleize
+    end
+  end
 end

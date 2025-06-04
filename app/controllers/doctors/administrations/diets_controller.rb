@@ -239,7 +239,7 @@ class Doctors::Administrations::DietsController < ApplicationController
       daily_menus_attributes: [
         :id, :day_of_week, :notes, :_destroy,
         meals_attributes: [
-          :id, :meal_type, :time_suggestion, :description, :_destroy,
+          :id, :meal_type, :time_suggestion, :description, :preparation_instructions, :_destroy,
           mealfoods_attributes: [
             :id, :ingredient_name, :quantity, :unit, :notes, :_destroy
           ]

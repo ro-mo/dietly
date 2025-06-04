@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_181156) do
   create_table "appointments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_094050) do
     t.decimal "carbohydrates", precision: 10, scale: 2, default: "0.0"
     t.decimal "fats", precision: 10, scale: 2, default: "0.0"
     t.decimal "fiber", precision: 10, scale: 2, default: "0.0"
+    t.text "preparation_instructions"
     t.index ["daily_menu_id"], name: "index_meals_on_daily_menu_id"
   end
 

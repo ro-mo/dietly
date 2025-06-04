@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_181156) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_192404) do
   create_table "appointments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -114,10 +114,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_181156) do
     t.datetime "password_reset_sent_at"
     t.integer "password_reset_attempts", default: 0
     t.datetime "password_reset_locked_until"
+    t.date "date_of_birth"
+    t.string "gender"
+    t.decimal "height", precision: 5, scale: 2
+    t.decimal "weight", precision: 5, scale: 2
+    t.string "address"
+    t.string "city"
+    t.string "postal_code"
+    t.string "verification_status", default: "pending", null: false
     t.index ["doctor_id"], name: "index_users_on_doctor_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["password_reset_sent_at"], name: "index_users_on_password_reset_sent_at"
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
+    t.index ["verification_status"], name: "index_users_on_verification_status"
   end
 
   add_foreign_key "daily_menus", "diet_plans"

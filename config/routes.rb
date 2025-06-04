@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   namespace :patients do
     get "signup", to: "registrations#new"
     post "signup", to: "registrations#create"
+    resource :profile, only: [ :show, :edit, :update ]
     namespace :administrations do
       get "diet_routine", to: "diet_routine"
       get "diet_history", to: "diet_history"

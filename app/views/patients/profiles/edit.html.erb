@@ -1,12 +1,12 @@
 <div class="container mx-auto px-4 py-8">
   <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-    <h1 class="text-2xl font-bold mb-6">Modifica Paziente</h1>
+    <h1 class="text-2xl font-bold mb-6">Modifica Profilo</h1>
 
-    <%= form_with(model: [:doctors, :administrations, @patient], local: true, class: "space-y-6") do |f| %>
+    <%= form_with(model: @patient, url: patients_profile_path, method: :patch, local: true, class: "space-y-4") do |f| %>
       <% if @patient.errors.any? %>
         <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
           <h2 class="font-semibold mb-2">
-            <%= pluralize(@patient.errors.count, "errore") %> impediscono il salvataggio del paziente:
+            <%= pluralize(@patient.errors.count, "errore") %> impediscono il salvataggio del profilo:
           </h2>
           <ul class="list-disc list-inside">
             <% @patient.errors.full_messages.each do |message| %>
@@ -18,32 +18,32 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <%= f.label :first_name, "Nome", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :first_name, "Nome", class: "block text-gray-600 mb-1" %>
           <%= f.text_field :first_name, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
         <div>
-          <%= f.label :last_name, "Cognome", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :last_name, "Cognome", class: "block text-gray-600 mb-1" %>
           <%= f.text_field :last_name, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
       </div>
 
       <div>
-        <%= f.label :email_address, "Email", class: "block text-gray-600 font-semibold mb-1" %>
+        <%= f.label :email_address, "Email", class: "block text-gray-600 mb-1" %>
         <%= f.email_field :email_address, class: "w-full border border-gray-300 rounded px-3 py-2" %>
       </div>
 
       <div>
-        <%= f.label :phone, "Telefono", class: "block text-gray-600 font-semibold mb-1" %>
+        <%= f.label :phone, "Telefono", class: "block text-gray-600 mb-1" %>
         <%= f.telephone_field :phone, class: "w-full border border-gray-300 rounded px-3 py-2" %>
       </div>
 
       <div>
-        <%= f.label :date_of_birth, "Data di Nascita", class: "block text-gray-600 font-semibold mb-1" %>
+        <%= f.label :date_of_birth, "Data di Nascita", class: "block text-gray-600 mb-1" %>
         <%= f.date_field :date_of_birth, class: "w-full border border-gray-300 rounded px-3 py-2" %>
       </div>
 
       <div>
-        <%= f.label :gender, "Genere", class: "block text-gray-600 font-semibold mb-1" %>
+        <%= f.label :gender, "Genere", class: "block text-gray-600 mb-1" %>
         <%= f.select :gender, 
             options_for_select([["Maschio", "M"], ["Femmina", "F"], ["Altro", "O"]], @patient.gender),
             { include_blank: "Seleziona..." },
@@ -52,35 +52,35 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <%= f.label :height, "Altezza (cm)", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :height, "Altezza (cm)", class: "block text-gray-600 mb-1" %>
           <%= f.number_field :height, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
         <div>
-          <%= f.label :weight, "Peso (kg)", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :weight, "Peso (kg)", class: "block text-gray-600 mb-1" %>
           <%= f.number_field :weight, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
       </div>
 
       <div>
-        <%= f.label :address, "Indirizzo", class: "block text-gray-600 font-semibold mb-1" %>
+        <%= f.label :address, "Indirizzo", class: "block text-gray-600 mb-1" %>
         <%= f.text_field :address, class: "w-full border border-gray-300 rounded px-3 py-2" %>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <%= f.label :city, "Città", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :city, "Città", class: "block text-gray-600 mb-1" %>
           <%= f.text_field :city, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
         <div>
-          <%= f.label :postal_code, "CAP", class: "block text-gray-600 font-semibold mb-1" %>
+          <%= f.label :postal_code, "CAP", class: "block text-gray-600 mb-1" %>
           <%= f.text_field :postal_code, class: "w-full border border-gray-300 rounded px-3 py-2" %>
         </div>
       </div>
 
-      <div class="mt-8 flex justify-end space-x-4">
-        <%= link_to "Annulla", doctors_administrations_patients_management_path, class: "bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded" %>
+      <div class="mt-8 flex justify-between">
         <%= f.submit "Salva Modifiche", class: "bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" %>
+        <%= link_to "Annulla", patients_profile_path, class: "text-gray-600 hover:text-gray-800" %>
       </div>
     <% end %>
   </div>
-</div>
+</div> 

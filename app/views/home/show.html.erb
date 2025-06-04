@@ -17,7 +17,7 @@
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
               <%= link_to "Appuntamenti", patients_administrations_my_appointments_path, 
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
-              <%= link_to "Profilo", edit_doctors_administrations_patient_path(Current.user), 
+              <%= link_to "Profilo", patients_profile_path, 
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
             <% else %>
               <%= link_to "Gestione Pazienti", doctors_administrations_patients_management_path, 

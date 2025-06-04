@@ -5,8 +5,8 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   # Validazioni per la password
-  validates :password, length: { 
-    minimum: 6, 
+  validates :password, length: {
+    minimum: 6,
     maximum: 12,
     too_short: "deve essere di almeno %{count} caratteri",
     too_long: "non può essere più lunga di %{count} caratteri"
@@ -19,6 +19,15 @@ class User < ApplicationRecord
   # Validazioni per i campi di reset password
   validates :password_reset_token, uniqueness: true, allow_nil: true
   validates :password_reset_attempts, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+
+  # Validazioni per i campi aggiuntivi
+  validates :first_name, :last_name, presence: true
+  validates :email_address, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :phone, format: { with: /\A\+?[\d\s-]+\z/, message: "deve contenere solo numeri, spazi e trattini" }, allow_blank: true
+  validates :date_of_birth, presence: true
+  validates :gender, inclusion: { in: %w[M F O], message: "deve essere M, F o O" }, allow_blank: true
+  validates :height, :weight, numericality: { greater_than: 0 }, allow_blank: true
+  validates :postal_code, format: { with: /\A\d{5}\z/, message: "deve essere di 5 cifre" }, allow_blank: true
 
   before_validation :set_default_verification_status, on: :create
 
@@ -57,7 +66,7 @@ class User < ApplicationRecord
   private
 
   def set_default_verification_status
-    self.verification_status ||= 'pending'
+    self.verification_status ||= "pending"
   end
 
   def password_complexity

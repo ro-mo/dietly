@@ -1,7 +1,7 @@
 class Patients::ProfilesController < ApplicationController
-  before_action :authenticate!
-  before_action :ensure_patient
+  include Authentication
   before_action :set_patient
+  before_action :ensure_patient
 
   def show
   end
@@ -10,6 +10,8 @@ class Patients::ProfilesController < ApplicationController
   end
 
   def update
+    params[:patient].delete(:verification_status) if params[:patient].present?
+
     if @patient.update(patient_params)
       redirect_to patients_profile_path, notice: "Profilo aggiornato con successo."
     else
@@ -25,9 +27,9 @@ class Patients::ProfilesController < ApplicationController
 
   def patient_params
     params.require(:patient).permit(
-      :name,
-      :surname,
-      :email,
+      :first_name,
+      :last_name,
+      :email_address,
       :phone,
       :date_of_birth,
       :gender,
@@ -41,7 +43,7 @@ class Patients::ProfilesController < ApplicationController
 
   def ensure_patient
     unless Current.user.is_a?(Patient)
-      redirect_to root_path, alert: "Non hai i permessi necessari per accedere a questa pagina."
+      redirect_to root_path, alert: "Accesso non autorizzato."
     end
   end
 end

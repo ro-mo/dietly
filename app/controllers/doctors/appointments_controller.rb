@@ -1,7 +1,7 @@
 module Doctors
   class AppointmentsController < ApplicationController
     before_action :ensure_authenticated
-    before_action :set_appointment, only: [:show, :edit, :update, :destroy]
+    before_action :set_appointment, only: [ :show, :edit, :update, :destroy ]
     before_action :ensure_doctor_access
 
     def index
@@ -20,14 +20,13 @@ module Doctors
 
     def create
       @appointment = Current.user.appointments.new(appointment_params)
-      
+
       if @appointment.start_time.present?
         @appointment.end_time = @appointment.start_time + 20.minutes
       end
 
       if @appointment.save
-        # Usiamo il percorso corretto namespacizzato
-        redirect_to doctors_appointments_path, notice: 'Appuntamento creato con successo'
+        redirect_to root_path, notice: "Appuntamento creato con successo"
       else
         @patients = Current.user.patients
         render :new, status: :unprocessable_entity
@@ -43,7 +42,7 @@ module Doctors
       # set_appointment garantisce che l'appuntamento appartenga al dottore
       # Logica per end_time
       start_time_param = params[:appointment][:start_time]
-      if start_time_param.present? && start_time_param != @appointment.start_time&.strftime('%Y-%m-%dT%H:%M')
+      if start_time_param.present? && start_time_param != @appointment.start_time&.strftime("%Y-%m-%dT%H:%M")
         begin
           new_start_time = Time.zone.parse(start_time_param)
           params[:appointment][:end_time] = new_start_time + 20.minutes if new_start_time
@@ -61,7 +60,7 @@ module Doctors
       end
 
       if @appointment.update(appointment_params)
-        redirect_to doctors_appointments_path, notice: 'Appuntamento aggiornato con successo'
+        redirect_to root_path, notice: "Appuntamento aggiornato con successo"
       else
         @patients = Current.user.patients
         render :edit, status: :unprocessable_entity
@@ -71,10 +70,10 @@ module Doctors
     def destroy
       # set_appointment garantisce che l'appuntamento appartenga al dottore
       if @appointment.destroy
-        redirect_to doctors_appointments_path, notice: 'Appuntamento cancellato con successo'
+        redirect_to root_path, notice: "Appuntamento cancellato con successo"
       else
         # Usiamo il percorso corretto namespacizzato per il redirect in caso di errore
-        redirect_to doctors_appointments_path, alert: 'Errore durante la cancellazione dell\'appuntamento'
+        redirect_to root_path, alert: "Errore durante la cancellazione dell'appuntamento"
       end
     end
 
@@ -105,4 +104,4 @@ module Doctors
       end
     end
   end
-end 
+end

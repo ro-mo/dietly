@@ -1,24 +1,25 @@
 class Doctors::Administrations::DietsController < ApplicationController
   before_action :ensure_doctor
-  before_action :set_diet_plan, only: [:edit, :update, :destroy]
-  before_action :set_patients, only: [:new, :create, :edit, :update]
+  before_action :set_diet_plan, only: [ :edit, :update, :destroy ]
+  before_action :set_patients, only: [ :new, :create, :edit, :update ]
+  before_action :force_patient_filter, only: [ :index ]
 
   def index
     # Base query: tutte le diete del medico corrente
     diet_plans_query = DietPlan.where(doctor: Current.user).includes(:patient)
-    
+
     # Applicazione del filtro per paziente se presente
     if params[:patient_id].present?
       diet_plans_query = diet_plans_query.where(patient_id: params[:patient_id])
       @patient = Patient.find_by(id: params[:patient_id])
     end
-    
+
     # Ordinamento finale
     @diet_plans = diet_plans_query.order(start_date: :desc)
   end
 
   def new
-    @patient = User.find_by(id: params[:patient_id], type: 'Patient')
+    @patient = User.find_by(id: params[:patient_id], type: "Patient")
     if @patient.nil? && params[:patient_id].present?
       redirect_to doctors_administrations_patients_management_path, alert: "Paziente non trovato."
       return
@@ -26,21 +27,21 @@ class Doctors::Administrations::DietsController < ApplicationController
 
     @diet_plan = DietPlan.new
     @diet_plan.patient = @patient if @patient
-    
+
     # Crea manualmente i giorni della settimana e i pasti
     (1..7).each do |day|
       daily_menu = @diet_plan.daily_menus.build(day_of_week: day)
-      
+
       # Crea tutti i tipi di pasti per ogni giorno
       meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
       meal_times = {
-        'colazione' => '08:00',
-        'snack_mattina' => '11:00',
-        'pranzo' => '13:00',
-        'snack_pomeriggio' => '16:00',
-        'cena' => '20:00'
+        "colazione" => "08:00",
+        "snack_mattina" => "11:00",
+        "pranzo" => "13:00",
+        "snack_pomeriggio" => "16:00",
+        "cena" => "20:00"
       }
-      
+
       meal_types.each do |type|
         daily_menu.meals.build(
           meal_type: type,
@@ -54,7 +55,7 @@ class Doctors::Administrations::DietsController < ApplicationController
   def create
     Rails.logger.debug "=== CREATE DIET PLAN START ==="
     Rails.logger.debug "Received Params for Create: #{params.inspect}"
-    
+
     # Usa diet_plan_params per includere tutti gli attributi nidificati
     @diet_plan = DietPlan.new(diet_plan_params)
     @diet_plan.doctor = Current.user
@@ -63,16 +64,16 @@ class Doctors::Administrations::DietsController < ApplicationController
     (1..7).each do |day|
       daily_menu = @diet_plan.daily_menus.find_or_initialize_by(day_of_week: day)
       daily_menu.diet_plan = @diet_plan # Imposta l'associazione
-      
+
       meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
       meal_times = {
-        'colazione' => '08:00',
-        'snack_mattina' => '11:00',
-        'pranzo' => '13:00',
-        'snack_pomeriggio' => '16:00',
-        'cena' => '20:00'
+        "colazione" => "08:00",
+        "snack_mattina" => "11:00",
+        "pranzo" => "13:00",
+        "snack_pomeriggio" => "16:00",
+        "cena" => "20:00"
       }
-      
+
       meal_types.each do |type|
         meal = daily_menu.meals.find_or_initialize_by(meal_type: type)
         meal.daily_menu = daily_menu # Imposta l'associazione
@@ -85,7 +86,7 @@ class Doctors::Administrations::DietsController < ApplicationController
       Rails.logger.debug "=== DIET PLAN CREATED SUCCESSFULLY ==="
       Rails.logger.debug "Created Diet Plan:"
       Rails.logger.debug "Daily Menus: #{@diet_plan.daily_menus.count}"
-      
+
       @diet_plan.daily_menus.each do |menu|
         Rails.logger.debug "Menu #{menu.day_of_week}:"
         menu.meals.each do |meal|
@@ -96,13 +97,13 @@ class Doctors::Administrations::DietsController < ApplicationController
           end
         end
       end
-      
+
       after_save_actions
-      redirect_to doctors_administrations_diets_path, notice: 'Piano dietetico creato con successo.'
+      redirect_to doctors_administrations_diets_path, notice: "Piano dietetico creato con successo."
     else
       Rails.logger.debug "=== DIET PLAN CREATION FAILED ==="
       Rails.logger.debug "Errors: #{@diet_plan.errors.full_messages}"
-      @patient = User.find_by(id: params[:diet_plan][:patient_id], type: 'Patient') if params[:diet_plan]
+      @patient = User.find_by(id: params[:diet_plan][:patient_id], type: "Patient") if params[:diet_plan]
       render :new, status: :unprocessable_entity
     end
   end
@@ -114,11 +115,11 @@ class Doctors::Administrations::DietsController < ApplicationController
 
     meal_types = %w[colazione snack_mattina pranzo snack_pomeriggio cena]
     meal_times = {
-      'colazione' => '08:00',
-      'snack_mattina' => '11:00',
-      'pranzo' => '13:00',
-      'snack_pomeriggio' => '16:00',
-      'cena' => '20:00'
+      "colazione" => "08:00",
+      "snack_mattina" => "11:00",
+      "pranzo" => "13:00",
+      "snack_pomeriggio" => "16:00",
+      "cena" => "20:00"
     }
 
     # Ensure all 7 daily menus exist and all 5 meal types exist within each
@@ -145,13 +146,12 @@ class Doctors::Administrations::DietsController < ApplicationController
       end
 
       # Sort meals by time suggestion for consistent display in the form (in memory)
-      daily_menu.meals.target.sort_by! { |meal| meal_times[meal.meal_type] || '23:59' } # Sort meals in memory by modifying the target array
+      daily_menu.meals.target.sort_by! { |meal| meal_times[meal.meal_type] || "23:59" } # Sort meals in memory by modifying the target array
 
       Rails.logger.debug "    Meals count (after build and sort): #{daily_menu.meals.count}"
       daily_menu.meals.each do |meal|
           Rails.logger.debug "      Meal ID: #{meal.id || 'new'}, Type: #{meal.meal_type}, Mealfoods count: #{meal.mealfoods.count}"
       end
-
     end
 
     # Ensure all daily menus are in the collection, even if not yet saved and sort them
@@ -165,14 +165,14 @@ class Doctors::Administrations::DietsController < ApplicationController
   def update
     Rails.logger.debug "=== UPDATE DIET PLAN ==="
     Rails.logger.debug "Params: #{params.inspect}"
-    
+
     # Imposta manualmente i campi daily_menu_id e diet_plan_id
     params[:diet_plan][:daily_menus_attributes]&.each do |_, daily_attrs|
       daily_attrs[:diet_plan_id] = @diet_plan.id
-      
+
       daily_attrs[:meals_attributes]&.each do |_, meal_attrs|
         meal_attrs[:daily_menu_id] = daily_attrs[:id] if daily_attrs[:id].present?
-        
+
         # Log per i mealfoods
         if meal_attrs[:mealfoods_attributes].present?
           Rails.logger.debug "Mealfoods per meal #{meal_attrs[:id]}:"
@@ -182,12 +182,12 @@ class Doctors::Administrations::DietsController < ApplicationController
         end
       end
     end
-    
+
     if @diet_plan.update(diet_plan_params)
       Rails.logger.debug "=== DIET PLAN UPDATED SUCCESSFULLY ==="
       Rails.logger.debug "Updated Diet Plan:"
       Rails.logger.debug "Daily Menus: #{@diet_plan.daily_menus.count}"
-      
+
       @diet_plan.daily_menus.each do |menu|
         Rails.logger.debug "Menu #{menu.day_of_week}:"
         menu.meals.each do |meal|
@@ -198,9 +198,9 @@ class Doctors::Administrations::DietsController < ApplicationController
           end
         end
       end
-      
+
       after_save_actions
-      redirect_to doctors_administrations_diets_path, notice: 'Piano dietetico aggiornato con successo.'
+      redirect_to doctors_administrations_diets_path, notice: "Piano dietetico aggiornato con successo."
     else
       Rails.logger.debug "=== DIET PLAN UPDATE FAILED ==="
       Rails.logger.debug "Errors: #{@diet_plan.errors.full_messages}"
@@ -210,7 +210,7 @@ class Doctors::Administrations::DietsController < ApplicationController
 
   def destroy
     @diet_plan.destroy
-    redirect_to doctors_administrations_diets_path, notice: 'Piano dietetico eliminato con successo.', status: :see_other
+    redirect_to doctors_administrations_diets_path, notice: "Piano dietetico eliminato con successo.", status: :see_other
   end
 
   private
@@ -224,7 +224,7 @@ class Doctors::Administrations::DietsController < ApplicationController
   def set_diet_plan
     @diet_plan = DietPlan.find_by!(id: params[:id], doctor_id: Current.user.id)
   rescue ActiveRecord::RecordNotFound
-    redirect_to doctors_administrations_diets_path, alert: 'Piano dietetico non trovato o non autorizzato.'
+    redirect_to doctors_administrations_diets_path, alert: "Piano dietetico non trovato o non autorizzato."
   end
 
   def set_patients
@@ -247,17 +247,17 @@ class Doctors::Administrations::DietsController < ApplicationController
       ]
     ).tap do |whitelisted|
       Rails.logger.debug "Whitelisted params: #{whitelisted.inspect}"
-      
+
       # Assicurati che i daily_menus abbiano un day_of_week
       whitelisted[:daily_menus_attributes]&.each do |_, daily_attrs|
         daily_attrs[:day_of_week] ||= 1 if daily_attrs[:day_of_week].blank?
-        
+
         # Assicurati che i meals abbiano un meal_type e time_suggestion
         daily_attrs[:meals_attributes]&.each do |_, meal_attrs|
-          meal_attrs[:meal_type] ||= 'colazione' if meal_attrs[:meal_type].blank?
-          meal_attrs[:time_suggestion] ||= '08:00' if meal_attrs[:time_suggestion].blank?
+          meal_attrs[:meal_type] ||= "colazione" if meal_attrs[:meal_type].blank?
+          meal_attrs[:time_suggestion] ||= "08:00" if meal_attrs[:time_suggestion].blank?
           meal_attrs[:description] ||= "#{meal_attrs[:meal_type].titleize} del giorno" if meal_attrs[:description].blank?
-          
+
           # Rimuovi i mealfoods vuoti
           meal_attrs[:mealfoods_attributes]&.reject! { |_, food_attrs| food_attrs[:ingredient_name].blank? && food_attrs[:quantity].blank? }
         end
@@ -270,6 +270,14 @@ class Doctors::Administrations::DietsController < ApplicationController
       meal.mealfoods.each do |mealfood|
         CalculateNutritionalValuesJob.perform_later(mealfood.id)
       end
+    end
+  end
+
+  def force_patient_filter
+    # Se il paziente è stato specificato nella URL, forziamo il filtro
+    if request.referer&.include?("patient_id=") && !params[:patient_id].present?
+      patient_id = request.referer.match(/patient_id=(\d+)/)&.[](1)
+      redirect_to doctors_administrations_diets_path(patient_id: patient_id) if patient_id
     end
   end
 end

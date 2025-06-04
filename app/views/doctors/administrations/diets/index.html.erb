@@ -7,28 +7,6 @@
     </div>
   </div>
 
-  <%= form_with url: doctors_administrations_diets_path, method: :get, local: true, class: "mb-4" do %>
-    <div class="flex items-center space-x-2">
-      <%= select_tag :patient_id, 
-                     options_from_collection_for_select(@patients || Current.user.patients, :id, :full_name, params[:patient_id]), 
-                     prompt: "Filtra per paziente", 
-                     class: "form-select", 
-                     id: "patient_filter",
-                     onchange: "this.form.submit();" %>
-      <% if params[:patient_id].present? %>
-        <%= link_to "Rimuovi filtro", doctors_administrations_diets_path, class: "ml-2 text-sm text-gray-500 underline" %>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if params[:patient_id].present? && @patient %>
-    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 dark:bg-blue-900 dark:border-blue-700">
-      <p class="text-blue-700 dark:text-blue-300">
-        <strong>Filtro attivo:</strong> Diete per <%= @patient.full_name %>
-      </p>
-    </div>
-  <% end %>
-
   <% if @diet_plans.present? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

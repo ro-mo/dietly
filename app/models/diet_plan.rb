@@ -17,16 +17,11 @@ class DietPlan < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  # Callback per controllare automaticamente le diete scadute
+  after_find :check_expiration
+
   def self.set_inactive_expired
     where("end_date < ?", Date.current).update_all(active: false)
-  end
-
-  def end_date_after_start_date
-    return if end_date.blank? || start_date.blank?
-
-    if end_date < start_date
-      errors.add(:end_date, "deve essere successiva alla data di inizio")
-    end
   end
 
   def shopping_list
@@ -80,5 +75,21 @@ class DietPlan < ApplicationRecord
 
     # Ordina la lista alfabeticamente per nome ingrediente
     shopping_list.sort.to_h
+  end
+
+  private
+
+  def check_expiration
+    if active? && end_date < Date.current
+      update_column(:active, false)
+    end
+  end
+
+  def end_date_after_start_date
+    return if end_date.blank? || start_date.blank?
+
+    if end_date < start_date
+      errors.add(:end_date, "deve essere successiva alla data di inizio")
+    end
   end
 end

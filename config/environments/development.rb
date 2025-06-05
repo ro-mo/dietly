@@ -13,6 +13,9 @@ Rails.application.configure do
   # Abilita il server timing
   config.server_timing = true
 
+  # Abilita il server di asset
+  config.public_file_server.enabled = true
+
   # Configurazione della cache
   if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true

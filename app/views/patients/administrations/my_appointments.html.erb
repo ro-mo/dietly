@@ -1,34 +1,76 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">I miei Appuntamenti</h1>
-    <%= link_to 'Torna alla home', root_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
-  </div>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">I miei Appuntamenti</h1>
+      <%= link_to 'Torna alla home', root_path, 
+          class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
+    </div>
 
-  <% if @appointments.any? %>
-    <div class="grid gap-4">
-      <% @appointments.each do |appointment| %>
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-xl font-semibold mb-2">
-            Appuntamento con Dr. <%= appointment.doctor.full_name %>
-          </h2>
-          <p class="text-gray-600">
-            Data: <%= l appointment.start_time.to_date, format: :long if appointment.start_time %>
-          </p>
-          <p class="text-gray-600">
-            Orario: <%= l appointment.start_time, format: :time if appointment.start_time %> - <%= l appointment.end_time, format: :time if appointment.end_time %>
-          </p>
-          <% if appointment.notes.present? %>
-            <div class="mt-4 pt-4 border-t border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Note del dottore:</h3>
-              <p class="mt-1 text-sm text-gray-600"><%= appointment.notes %></p>
-            </div>
-          <% end %>
+    <% if @appointments.any? %>
+      <% upcoming_appointments = @appointments.select { |a| a.start_time > Time.current } %>
+      <% past_appointments = @appointments.select { |a| a.start_time <= Time.current } %>
+
+      <% if upcoming_appointments.any? %>
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Prossimi Appuntamenti</h2>
+          <div class="grid gap-4">
+            <% upcoming_appointments.each do |appointment| %>
+              <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Appuntamento con Dr. <%= appointment.doctor.full_name %>
+                </h3>
+                <div class="space-y-2">
+                  <p class="text-gray-600 dark:text-gray-400">
+                    Data: <%= l appointment.start_time.to_date, format: :long if appointment.start_time %>
+                  </p>
+                  <p class="text-gray-600 dark:text-gray-400">
+                    Orario: <%= l appointment.start_time, format: :time if appointment.start_time %> - <%= l appointment.end_time, format: :time if appointment.end_time %>
+                  </p>
+                  <% if appointment.notes.present? %>
+                    <div class="mt-4">
+                      <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Note del dottore:</h4>
+                      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400"><%= appointment.notes %></p>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
-    </div>
-  <% else %>
-    <div class="text-center py-8">
-      <p class="text-gray-600">Non hai ancora nessun appuntamento.</p>
-    </div>
-  <% end %>
+
+      <% if past_appointments.any? %>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Appuntamenti Passati</h2>
+          <div class="grid gap-4">
+            <% past_appointments.each do |appointment| %>
+              <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Appuntamento con Dr. <%= appointment.doctor.full_name %>
+                </h3>
+                <div class="space-y-2">
+                  <p class="text-gray-600 dark:text-gray-400">
+                    Data: <%= l appointment.start_time.to_date, format: :long if appointment.start_time %>
+                  </p>
+                  <p class="text-gray-600 dark:text-gray-400">
+                    Orario: <%= l appointment.start_time, format: :time if appointment.start_time %> - <%= l appointment.end_time, format: :time if appointment.end_time %>
+                  </p>
+                  <% if appointment.notes.present? %>
+                    <div class="mt-4">
+                      <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Note del dottore:</h4>
+                      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400"><%= appointment.notes %></p>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center">
+        <p class="text-gray-600 dark:text-gray-400">Non hai ancora nessun appuntamento.</p>
+      </div>
+    <% end %>
+  </div>
 </div> 

@@ -1,142 +1,155 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dettagli Dieta: <%= @diet_plan.title %></h1>
-    <%= link_to "Torna alla cronologia", patients_administrations_diet_history_path, class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
-  </div>
-
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-8">
-    <div class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Informazioni Generali</h2>
-          <div class="space-y-4">
-            <div>
-              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Titolo</p>
-              <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= @diet_plan.title %></p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Data Inizio</p>
-              <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= l(@diet_plan.start_date, format: :long) if @diet_plan.start_date %></p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Data Fine</p>
-              <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= l(@diet_plan.end_date, format: :long) if @diet_plan.end_date %></p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Stato</p>
-              <p class="mt-1">
-                <% if @diet_plan.active? %>
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    Attiva
-                  </span>
-                <% else %>
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
-                    Inattiva
-                  </span>
-                <% end %>
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Note</h2>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-            <p class="text-gray-700 dark:text-gray-300"><%= @diet_plan.notes.present? ? @diet_plan.notes : "Nessuna nota disponibile" %></p>
-          </div>
-        </div>
-      </div>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dettagli Dieta: <%= @diet_plan.title %></h1>
+      <%= link_to "Torna alla cronologia", patients_administrations_diet_history_path, 
+          class: "px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300" %>
     </div>
-  </div>
 
-  <% if @diet_plan.daily_menus.any? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
       <div class="p-6">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Piano Settimanale</h2>
-        
-        <div class="space-y-8">
-          <% @diet_plan.daily_menus.order(:day_of_week).each do |daily_menu| %>
-            <div class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0 last:pb-0">
-              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                <%= case daily_menu.day_of_week
-                    when 1 then "Lunedì"
-                    when 2 then "Martedì"
-                    when 3 then "Mercoledì"
-                    when 4 then "Giovedì"
-                    when 5 then "Venerdì"
-                    when 6 then "Sabato"
-                    when 7 then "Domenica"
-                    end %>
-              </h3>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <% daily_menu.meals.order(:time_suggestion).each do |meal| %>
-                  <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                    <div class="flex justify-between items-start mb-2">
-                      <h4 class="font-medium text-gray-900 dark:text-white">
-                        <%= case meal.meal_type
-                            when "colazione" then "Colazione"
-                            when "snack_mattina" then "Snack Mattina"
-                            when "pranzo" then "Pranzo"
-                            when "snack_pomeriggio" then "Snack Pomeriggio"
-                            when "cena" then "Cena"
-                            end %>
-                      </h4>
-                      <span class="text-sm text-gray-500 dark:text-gray-400"><%= meal.time_suggestion %></span>
-                    </div>
-                    <p class="text-gray-700 dark:text-gray-300"><%= meal.description %></p>
-                    
-                    <%# Lista degli ingredienti %>
-                    <% if meal.mealfoods.any? %>
-                      <div class="mt-2">
-                        <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ingredienti:</h5>
-                        <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
-                          <% meal.mealfoods.each do |mealfood| %>
-                            <li>
-                              <%= mealfood.ingredient_name %> - <%= mealfood.quantity %> <%= mealfood.unit %>
-                            </li>
-                          <% end %>
-                        </ul>
-                      </div>
-                    <% end %>
-                  </div>
-                <% end %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Informazioni Generali</h2>
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Titolo</p>
+                <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= @diet_plan.title %></p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Data Inizio</p>
+                <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= l(@diet_plan.start_date, format: :long) if @diet_plan.start_date %></p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Data Fine</p>
+                <p class="mt-1 text-lg text-gray-900 dark:text-white"><%= l(@diet_plan.end_date, format: :long) if @diet_plan.end_date %></p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Stato</p>
+                <p class="mt-1">
+                  <% if @diet_plan.active? %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      Attiva
+                    </span>
+                  <% else %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                      Inattiva
+                    </span>
+                  <% end %>
+                </p>
               </div>
             </div>
-          <% end %>
+          </div>
+          
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Note</h2>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+              <p class="text-gray-700 dark:text-gray-300"><%= @diet_plan.notes.present? ? @diet_plan.notes : "Nessuna nota disponibile" %></p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  <% else %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center">
-      <p class="text-gray-500 dark:text-gray-400">Nessun piano settimanale disponibile per questa dieta.</p>
-    </div>
-  <% end %>
-</div>
 
-<%# Lista della Spesa Settimanale %>
-<div class="container mx-auto px-4 py-8">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Lista della Spesa Settimanale</h2>
-      
-      <% shopping_list = @diet_plan.shopping_list %>
-      <% if shopping_list.any? %>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <% shopping_list.each do |ingredient_name, data| %>
-            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-900 dark:text-white font-medium"><%= ingredient_name.titleize %></span>
-                <span class="text-gray-600 dark:text-gray-400">
-                  <%= data[:quantity] %> <%= data[:unit] %>
-                </span>
+    <% if @diet_plan.daily_menus.any? %>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Piano Settimanale</h2>
+          
+          <div class="space-y-8">
+            <% @diet_plan.daily_menus.order(:day_of_week).each do |daily_menu| %>
+              <div class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0 last:pb-0">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                  <%= case daily_menu.day_of_week
+                      when 1 then "Lunedì"
+                      when 2 then "Martedì"
+                      when 3 then "Mercoledì"
+                      when 4 then "Giovedì"
+                      when 5 then "Venerdì"
+                      when 6 then "Sabato"
+                      when 7 then "Domenica"
+                      end %>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <% daily_menu.meals.order(:time_suggestion).each do |meal| %>
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm">
+                      <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-medium text-gray-900 dark:text-white">
+                          <%= case meal.meal_type
+                              when "colazione" then "Colazione"
+                              when "snack_mattina" then "Snack Mattina"
+                              when "pranzo" then "Pranzo"
+                              when "snack_pomeriggio" then "Snack Pomeriggio"
+                              when "cena" then "Cena"
+                              end %>
+                        </h4>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"><%= meal.time_suggestion %></span>
+                      </div>
+                      <p class="text-gray-700 dark:text-gray-300"><%= meal.description %></p>
+                      
+                      <%# Lista degli ingredienti %>
+                      <% if meal.mealfoods.any? %>
+                        <div class="mt-2">
+                          <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ingredienti:</h5>
+                          <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
+                            <% meal.mealfoods.each do |mealfood| %>
+                              <li>
+                                <%= mealfood.ingredient_name %> - <%= mealfood.quantity %> <%= mealfood.unit %>
+                              </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
+
+                      <%# Istruzioni di preparazione %>
+                      <% if meal.preparation_instructions.present? %>
+                        <div class="mt-4">
+                          <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-0">Preparazione:</h5>
+                          <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                            <%= meal.preparation_instructions %>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
               </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center">
+        <p class="text-gray-600 dark:text-gray-400">Nessun piano settimanale disponibile per questa dieta.</p>
+      </div>
+    <% end %>
+
+    <%# Lista della Spesa Settimanale %>
+    <div class="mt-8">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Lista della Spesa Settimanale</h2>
+          
+          <% shopping_list = @diet_plan.shopping_list %>
+          <% if shopping_list.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <% shopping_list.each do |ingredient_name, data| %>
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-900 dark:text-white font-medium"><%= ingredient_name.titleize %></span>
+                    <span class="text-gray-600 dark:text-gray-400">
+                      <%= data[:quantity] %> <%= data[:unit] %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
             </div>
+          <% else %>
+            <p class="text-gray-600 dark:text-gray-400 text-center">Nessun ingrediente nella lista della spesa.</p>
           <% end %>
         </div>
-      <% else %>
-        <p class="text-gray-500 dark:text-gray-400 text-center">Nessun ingrediente nella lista della spesa.</p>
-      <% end %>
+      </div>
     </div>
   </div>
 </div> 

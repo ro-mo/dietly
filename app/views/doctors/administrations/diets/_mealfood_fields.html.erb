@@ -1,6 +1,6 @@
 <%# Rimosso log di debug per foods %>
 
-<div class="mealfood-fields grid grid-cols-1 md:grid-cols-5 gap-2 items-end border-t border-gray-100 pt-2" data-new-record="<%= form.object.new_record? %>">
+<div class="mealfood-fields grid grid-cols-1 md:grid-cols-5 gap-2 items-end border-t border-gray-200 dark:border-gray-700 pt-2" data-new-record="<%= form.object.new_record? %>">
   <%# Usa l'indice corretto o 'NEW_RECORD' per i nuovi record %>
   <% index = defined?(index) ? index : form.index %>
 
@@ -10,20 +10,20 @@
   <%= form.hidden_field :_destroy %>
 
   <div class="md:col-span-2"> <%# Allarga il campo nome %>
-    <%= form.label :ingredient_name, "Ingrediente", class: "block text-xs font-medium text-gray-600" %>
-    <%= form.text_field :ingredient_name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "Nome Ingrediente" %>
+    <%= form.label :ingredient_name, "Ingrediente", class: "block text-xs font-medium text-gray-600 dark:text-gray-400" %>
+    <%= form.text_field :ingredient_name, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "Nome Ingrediente" %>
   </div>
   <div>
-    <%= form.label :quantity, "Quantità", class: "block text-xs font-medium text-gray-600" %>
-    <%= form.number_field :quantity, step: "any", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "Quantità" %>
+    <%= form.label :quantity, "Quantità", class: "block text-xs font-medium text-gray-600 dark:text-gray-400" %>
+    <%= form.number_field :quantity, step: "any", class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "Quantità" %>
   </div>
   <div>
-    <%= form.label :unit, "Unità", class: "block text-xs font-medium text-gray-600" %>
-    <%= form.text_field :unit, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-xs", placeholder: "g, kg, etc." %>
+    <%= form.label :unit, "Unità", class: "block text-xs font-medium text-gray-600 dark:text-gray-400" %>
+    <%= form.text_field :unit, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "g, kg, etc." %>
   </div>
   <div class="flex items-center justify-end">
     <button type="button"
-            class="remove-mealfood-button text-xs text-red-600 hover:text-red-800"
+            class="remove-mealfood-button text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-300"
             data-action="click->nested-form#remove">
       Rimuovi
     </button>

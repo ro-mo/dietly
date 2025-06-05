@@ -3,7 +3,7 @@
 
 <%= form_with(model: diet_plan, url: url, scope: :diet_plan, class: "space-y-6", data: { controller: "nested-form" }) do |form| %>
   <% if diet_plan.errors.any? %>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+    <div class="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded relative mb-4" role="alert">
       <strong class="font-bold">Errore!</strong>
       <span class="block sm:inline">Non è stato possibile salvare il piano dietetico:</span>
       <ul class="list-disc list-inside">
@@ -15,37 +15,37 @@
   <% end %>
 
   <%# Campi Principali DietPlan %>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
       <%# Mostra nome paziente (non modificabile) e campo nascosto %>
-      <%= form.label :patient_id, "Paziente", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :patient_id, "Paziente", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
       <% patient_name = @patient&.full_name || (@diet_plan.patient&.full_name || "Non selezionato") %>
-      <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 px-3 py-2 shadow-sm sm:text-sm"><%= patient_name %></p>
+      <p class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-3 py-2 shadow-md sm:text-sm text-gray-900 dark:text-white"><%= patient_name %></p>
       <%= form.hidden_field :patient_id %>
     </div>
     <div>
-      <%= form.label :title, class: "block text-sm font-medium text-gray-700" %>
-      <%= form.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      <%= form.label :title, class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+      <%= form.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
     </div>
     <div>
-      <%= form.label :active, class: "block text-sm font-medium text-gray-700" %>
-      <%= form.check_box :active, class: "mt-1 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+      <%= form.label :start_date, class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+      <%= form.date_field :start_date, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
     </div>
     <div>
-      <%= form.label :start_date, class: "block text-sm font-medium text-gray-700" %>
-      <%= form.date_field :start_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
-    </div>
-    <div>
-      <%= form.label :end_date, class: "block text-sm font-medium text-gray-700" %>
-      <%= form.date_field :end_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      <%= form.label :end_date, class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+      <%= form.date_field :end_date, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
     </div>
   </div>
-  <div>
-    <%= form.label :notes, "Note Generali Piano", class: "block text-sm font-medium text-gray-700" %>
-    <%= form.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+  <div class="mt-4">
+    <%= form.label :notes, "Note Generali Piano", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+    <%= form.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "Inserisci le note generali del piano..." %>
+  </div>
+  <div class="mt-4 flex items-center space-x-4">
+    <%= form.label :active, "Dieta attiva", class: "text-sm font-medium text-gray-600 dark:text-gray-400" %>
+    <%= form.check_box :active, class: "h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-marmorean-600 dark:text-marmorean-400 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400" %>
   </div>
 
-  <hr class="my-6">
+  <hr class="my-6 border-gray-200 dark:border-gray-700">
 
   <%# Template per i nuovi campi mealfood %>
   <% template = form.fields_for :daily_menus do |menu_form| %>
@@ -60,12 +60,12 @@
   <%# Menu Giornalieri %>
   <div class="space-y-6">
     <%= form.fields_for :daily_menus do |menu_form| %>
-      <div class="border rounded-lg p-4 bg-white shadow-sm">
+      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-md">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <%= menu_form.label :day_of_week, "Giorno", class: "block text-sm font-medium text-gray-700" %>
+            <%= menu_form.label :day_of_week, "Giorno", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
             <% day_names = { 1 => 'Lunedì', 2 => 'Martedì', 3 => 'Mercoledì', 4 => 'Giovedì', 5 => 'Venerdì', 6 => 'Sabato', 7 => 'Domenica' } %>
-            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 px-3 py-2 shadow-sm sm:text-sm">
+            <p class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-3 py-2 shadow-md sm:text-sm text-gray-900 dark:text-white">
               <%= day_names[menu_form.object.day_of_week] %>
             </p>
             <%= menu_form.hidden_field :day_of_week %>
@@ -78,11 +78,11 @@
         <%# Pasti %>
         <div class="space-y-4">
           <%= menu_form.fields_for :meals do |meal_form| %>
-            <div class="border rounded p-4 bg-gray-50">
+            <div class="border border-gray-200 dark:border-gray-700 rounded p-4 bg-gray-50 dark:bg-gray-700 shadow-md">
               <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                 <%# Campi del Pasto %>
                 <div>
-                  <%= meal_form.label :meal_type, "Tipo Pasto", class: "block text-sm font-medium text-gray-700" %>
+                  <%= meal_form.label :meal_type, "Tipo Pasto", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
                   <% meal_type_names = { 
                     'colazione' => 'Colazione', 
                     'snack_mattina' => 'Snack Mattina', 
@@ -90,23 +90,23 @@
                     'snack_pomeriggio' => 'Snack Pomeriggio', 
                     'cena' => 'Cena' 
                   } %>
-                  <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 px-3 py-2 shadow-sm sm:text-sm">
+                  <p class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-3 py-2 shadow-md sm:text-sm text-gray-900 dark:text-white">
                     <%= meal_type_names[meal_form.object.meal_type] %>
                   </p>
                   <%= meal_form.hidden_field :meal_type %>
                   <%= meal_form.hidden_field :daily_menu_id, value: menu_form.object.id if menu_form.object.persisted? %>
                 </div>
                 <div>
-                  <%= meal_form.label :description, "Nome Piatto", class: "block text-sm font-medium text-gray-700" %>
-                  <%= meal_form.text_field :description, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                  <%= meal_form.label :description, "Nome Piatto", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+                  <%= meal_form.text_field :description, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
                 </div>
                 <div>
-                  <%= meal_form.label :time_suggestion, "Ora", class: "block text-sm font-medium text-gray-700" %>
-                  <%= meal_form.time_field :time_suggestion, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                  <%= meal_form.label :time_suggestion, "Ora", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+                  <%= meal_form.time_field :time_suggestion, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
                 </div>
-                <div class="md:col-span-4">
-                  <%= meal_form.label :preparation_instructions, "Istruzioni di Preparazione", class: "block text-sm font-medium text-gray-700" %>
-                  <%= meal_form.text_area :preparation_instructions, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Inserisci le istruzioni per preparare il piatto..." %>
+                <div class="md:col-span-4 h-4">
+                  <%= meal_form.label :preparation_instructions, "Istruzioni di Preparazione", class: "block text-sm font-medium text-gray-600 dark:text-gray-400" %>
+                  <%= meal_form.text_area :preparation_instructions, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "Inserisci le istruzioni per preparare il piatto..." %>
                 </div>
                 <%= meal_form.hidden_field :id %>
                 <%= meal_form.hidden_field :_destroy %>
@@ -127,7 +127,7 @@
 
               <%# Bottone per aggiungere ingrediente - Deve essere nel form principale %>
               <button type="button"
-                      class="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
+                      class="mt-2 text-sm text-marmorean-600 hover:text-marmorean-700 dark:text-marmorean-400 dark:hover:text-marmorean-300 transition-colors duration-300"
                       data-action="nested-form#add"
                       data-template-html="<%= encoded_template %>">
                 + Aggiungi Ingrediente
@@ -135,14 +135,14 @@
             </div> <%# Chiusura del border rounded p-4 bg-gray-50 (Meal container) %>
           <% end %> <%# Chiusura del meal_form.fields_for :meals %>
         </div> <%# Chiusura del space-y-4 (Meals container) %>
-      </div> <%# Chiusura del border rounded-lg p-4 bg-white shadow-sm (Daily Menu container) %>
+      </div> <%# Chiusura del border rounded-lg p-4 bg-white shadow-md (Daily Menu container) %>
     <% end %> <%# Chiusura del form.fields_for :daily_menus %>
   </div> <%# Chiusura del space-y-6 (Daily Menus container) %>
 
   <%# Pulsanti di azione %>
   <div class="flex justify-end space-x-4">
-    <%= link_to "Annulla", doctors_administrations_diets_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
-    <%= form.submit class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= link_to "Annulla", doctors_administrations_diets_path, class: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 transition-colors duration-300" %>
+    <%= form.submit class: "px-4 py-2 text-sm font-medium text-white bg-marmorean-500 dark:bg-marmorean-600 border border-transparent rounded-md shadow-sm hover:bg-marmorean-600 dark:hover:bg-marmorean-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 transition-colors duration-300" %>
   </div>
 <% end %> <%# Chiusura del form_with %>
 

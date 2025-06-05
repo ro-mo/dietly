@@ -1,7 +1,7 @@
 <% if authenticated? %>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
     <!-- Header Navigation -->
-    <header class="bg-white dark:bg-gray-800 shadow-md">
+    <header class="bg-white dark:bg-gray-800 shadow-md top-0 w-full z-10">
       <div class="container mx-auto px-4">
         <div class="flex justify-between items-center h-16">
           <a href="<%= root_path %>" class="flex items-center text-2xl font-bold text-marmorean-600 dark:text-marmorean-400">
@@ -23,7 +23,7 @@
               <%= link_to "Gestione Pazienti", doctors_administrations_patients_management_path, 
                 class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
               <%= link_to "Nuovo Appuntamento", new_doctors_appointment_path, 
-                class: "px-4 py-2 text-sm font-medium text-white bg-marmorean-500 hover:bg-marmorean-600 rounded-lg shadow-md transition-colors duration-300 ease-in-out dark:bg-marmorean-600 dark:hover:bg-marmorean-700" %>
+                class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-marmorean-600 dark:text-gray-300 dark:hover:text-marmorean-400 transition-colors duration-300" %>
             <% end %>
             <%= button_to "Logout", session_path, 
               method: :delete, 
@@ -34,7 +34,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 flex-grow">
       <% if Current.user.is_a?(Patient) %>
         <% if @current_diet %>
           <!-- Diet Info -->
@@ -190,6 +190,11 @@
         </div>
       <% end %>
     </main>
+    <footer class="bg-white dark:bg-gray-800 p-6 w-full">
+      <p class="text-gray-600 dark:text-gray-400 text-center">
+        &copy; <%= Time.current.year %> Dietly. Tutti i diritti riservati.
+      </p>
+    </footer>
   </div>
 <% else %>
   <%= render "home/landing" %>

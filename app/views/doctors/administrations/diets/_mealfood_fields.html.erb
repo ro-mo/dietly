@@ -19,7 +19,16 @@
   </div>
   <div>
     <%= form.label :unit, "Unità", class: "block text-xs font-medium text-gray-600 dark:text-gray-400" %>
-    <%= form.text_field :unit, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white", placeholder: "g, kg, etc." %>
+    <%= form.select :unit, 
+        [
+          ['g', 'g'],
+          ['kg', 'kg'],
+          ['oz', 'oz'],
+          ['lb', 'lb'],
+          ['pz', 'pz']
+        ],
+        {},
+        class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-md focus:border-marmorean-500 dark:focus:border-marmorean-400 focus:ring-marmorean-500 dark:focus:ring-marmorean-400 sm:text-sm text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white" %>
   </div>
   <div class="flex items-center justify-end">
     <button type="button"

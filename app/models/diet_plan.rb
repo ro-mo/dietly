@@ -36,40 +36,56 @@ class DietPlan < ApplicationRecord
           quantity = mealfood.quantity.to_f
           unit = mealfood.unit.downcase
 
-          # Converti tutto in grammi per la somma
-          quantity_in_grams = case unit
-          when "g"
-              quantity
-          when "kg"
-              quantity * 1000
-          when "oz"
-              quantity * 28.35
-          when "lb"
-              quantity * 453.59
+          # Se l'unità è 'pz', mantieni il conteggio dei pezzi
+          if unit == "pz"
+            if shopping_list[ingredient_name]
+              shopping_list[ingredient_name][:quantity] += quantity
+            else
+              shopping_list[ingredient_name] = {
+                quantity: quantity,
+                unit: "pz"
+              }
+            end
           else
-              quantity # mantieni l'unità originale se non riconosciuta
-          end
+            # Converti tutto in grammi per la somma
+            quantity_in_grams = case unit
+            when "g"
+                quantity
+            when "kg"
+                quantity * 1000
+            when "oz"
+                quantity * 28.35
+            when "lb"
+                quantity * 453.59
+            else
+                quantity # mantieni l'unità originale se non riconosciuta
+            end
 
-          # Aggiorna o inizializza l'ingrediente nella lista della spesa
-          if shopping_list[ingredient_name]
-            shopping_list[ingredient_name][:quantity] += quantity_in_grams
-          else
-            shopping_list[ingredient_name] = {
-              quantity: quantity_in_grams,
-              original_unit: unit
-            }
+            # Aggiorna o inizializza l'ingrediente nella lista della spesa
+            if shopping_list[ingredient_name]
+              shopping_list[ingredient_name][:quantity] += quantity_in_grams
+            else
+              shopping_list[ingredient_name] = {
+                quantity: quantity_in_grams,
+                original_unit: unit
+              }
+            end
           end
         end
       end
     end
 
-    # Converti le quantità in unità appropriate (g o kg)
+    # Converti le quantità in unità appropriate (g o kg) solo per gli ingredienti non misurati in pezzi
     shopping_list.transform_values! do |data|
-      quantity = data[:quantity]
-      if quantity >= 1000
-        { quantity: (quantity / 1000.0).round(2), unit: "kg" }
+      if data[:unit] == "pz"
+        { quantity: data[:quantity].to_i, unit: "pz" } # Converti in intero per i pezzi
       else
-        { quantity: quantity.round(2), unit: "g" }
+        quantity = data[:quantity]
+        if quantity >= 1000
+          { quantity: (quantity / 1000.0).round(2), unit: "kg" }
+        else
+          { quantity: quantity.round(2), unit: "g" }
+        end
       end
     end
 

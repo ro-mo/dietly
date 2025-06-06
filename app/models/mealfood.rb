@@ -4,14 +4,14 @@ class Mealfood < ApplicationRecord
 
   validates :ingredient_name, presence: true
   validates :quantity, presence: true, numericality: { greater_than: 0 }
-  validates :unit, presence: true
+  validates :unit, presence: true, inclusion: { in: %w[g kg oz lb pz] }
   validates :calculation_status, inclusion: { in: %w[pending matched unmatched error] }
 
   # Scopes per filtrare per stato di calcolo
-  scope :pending_calculation, -> { where(calculation_status: 'pending') }
-  scope :matched, -> { where(calculation_status: 'matched') }
-  scope :unmatched, -> { where(calculation_status: 'unmatched') }
-  scope :error, -> { where(calculation_status: 'error') }
+  scope :pending_calculation, -> { where(calculation_status: "pending") }
+  scope :matched, -> { where(calculation_status: "matched") }
+  scope :unmatched, -> { where(calculation_status: "unmatched") }
+  scope :error, -> { where(calculation_status: "error") }
 
   # Callback per loggare i cambiamenti
   after_initialize do |mealfood|
@@ -36,31 +36,34 @@ class Mealfood < ApplicationRecord
   # Potremmo aggiungere metodi per la conversione di unità se necessario
 
   def convert_unit(new_unit)
-    return false unless new_unit.present? && %w[g kg oz lb].include?(new_unit)
-    
+    return false unless new_unit.present? && %w[g kg oz lb pz].include?(new_unit)
+
+    # Se l'unità corrente è 'pz' o la nuova unità è 'pz', non possiamo convertire
+    return false if unit == "pz" || new_unit == "pz"
+
     # Conversione da unità corrente a grammi
     grams = case unit
-            when 'g'
-              quantity 
-            when 'kg'
+    when "g"
+              quantity
+    when "kg"
               quantity * 1000
-            when 'oz'
+    when "oz"
               quantity * 28.35
-            when 'lb'
+    when "lb"
               quantity * 453.59
-            end
-    
+    end
+
     # Conversione da grammi alla nuova unità
     new_quantity = case new_unit
-                  when 'g'
+    when "g"
                     grams
-                  when 'kg'
+    when "kg"
                     grams / 1000.0
-                  when 'oz'
+    when "oz"
                     grams / 28.35
-                  when 'lb'
+    when "lb"
                     grams / 453.59
-                  end
+    end
 
     self.quantity = new_quantity.round(2)
     self.unit = new_unit
@@ -70,6 +73,7 @@ class Mealfood < ApplicationRecord
   # Metodo per calcolare i valori nutrizionali
   def calculate_nutritional_values
     return unless food.present?
+    return if unit == "pz" # Non calcolare i valori nutrizionali per i pezzi
 
     # Calcola i valori nutrizionali in base alla quantità
     self.calories = (food.calories * quantity / 100).round(2)
@@ -77,16 +81,16 @@ class Mealfood < ApplicationRecord
     self.carbohydrates = (food.carbohydrates * quantity / 100).round(2)
     self.fats = (food.fats * quantity / 100).round(2)
     self.fiber = (food.fiber * quantity / 100).round(2)
-    self.calculation_status = 'matched'
+    self.calculation_status = "matched"
     save
   rescue StandardError => e
-    self.calculation_status = 'error'
+    self.calculation_status = "error"
     save
     Rails.logger.error "Errore nel calcolo dei valori nutrizionali per Mealfood #{id}: #{e.message}"
   end
 
   # Callback per impostare lo stato di calcolo iniziale
   before_validation do
-    self.calculation_status ||= 'pending'
+    self.calculation_status ||= "pending"
   end
 end

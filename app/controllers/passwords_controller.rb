@@ -16,13 +16,17 @@ class PasswordsController < ApplicationController
       Rails.logger.info "Token generato: #{token}"
       Rails.logger.info "Data di scadenza: #{expiration_time}"
       Rails.logger.info "Stato verifica attuale: #{@user.verification_status}"
+      Rails.logger.info "Configurazione SMTP:"
+      Rails.logger.info "- Username: #{ENV['GMAIL_USERNAME']}"
+      Rails.logger.info "- Password presente: #{ENV['GMAIL_PASSWORD'].present? ? 'Sì' : 'No'}"
+      Rails.logger.info "- From address: #{ActionMailer::Base.default[:from]}"
 
       begin
         @user.update!(
           password_reset_token: token,
           password_reset_sent_at: expiration_time
         )
-        
+
         Rails.logger.info "Token salvato nel database. Invio email..."
         Rails.logger.info "Token nel database dopo il salvataggio: #{@user.reload.password_reset_token}"
 
